@@ -5,6 +5,7 @@ import pygame
 
 class Test:
     obList = []
+
     def __init__(self):
         self.screen = pygame.display.set_mode((1200, 700))
         self.srect = self.screen.get_rect()
@@ -17,6 +18,11 @@ class Test:
     @staticmethod
     def add(*args):
         for ob in list(args):
+            Test.obList.append(ob)
+
+    @staticmethod
+    def extend(ls):
+        for ob in ls:
             Test.obList.append(ob)
 
     def removeOB(self, ob):

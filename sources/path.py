@@ -2,17 +2,19 @@ import os
 
 
 class Path:
+    motherFol = 'SWar'
+
     def __init__(self):
         pass
 
     @staticmethod
     def getMotherPath():
-        return os.getcwd()
+        cur_path = os.getcwd()
+        return cur_path[:cur_path.index(Path.motherFol) + len(Path.motherFol)]
 
     @staticmethod
     def getPath(path):
-        s = 'SWar'
-        st = path.index(s) + len(s) if s in path else 0
+        st = path.index(Path.motherFol) + len(Path.motherFol) if Path.motherFol in path else 0
         path = path[st:]
         path = path.strip('..')
 
