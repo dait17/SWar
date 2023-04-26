@@ -7,6 +7,7 @@ from path import Path as P
 class Bullets(ABC):
     def __init__(self):
         self.cooldownTime = 500 #ms
+        self.time = 0
         self.imgPath = ''
         self.img = None
         self.level = 1
@@ -106,7 +107,7 @@ class Bullet(SBullet):
             self.enable = False
 
     def update(self):
-        pygame.draw.line(self.screen, (0,0,255), self.start, self.end)
+        # pygame.draw.line(self.screen, (0,0,255), self.start, self.end)
         if self.enable:
             self._movement()
             self._draw()

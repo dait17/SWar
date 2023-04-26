@@ -3,17 +3,12 @@ from bulletFireBall import FireBall
 
 class AttackSystem:
     def __init__(self):
-        self.bulletName = 'FireBal'
-        self.bullets = None
-        self._setBullets()
+        pass
 
-    def _setBullets(self):
-        if self.bulletName.upper() == 'FIREBALL':
-            self.bullets = FireBall()
+    @staticmethod
+    def getBullets(name:str):
+        if name.upper()=='FIREBALL':
+            return FireBall()
 
-    def getBullets(self, pos):
-        return self.bullets.getBullets(pos)
 
-    def setBullets(self, name: str):
-        self.bulletName = name
-        self._setBullets()
+

@@ -1,8 +1,11 @@
 import pygame
+from game import Game as G
 
 
 class Spaceship:
     def __init__(self, imgList:list, pos:list, size:list, vel, maxHp, directionUp):
+        self.directionUp = directionUp
+
         self.rect = self._initRect(pos, size)
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
@@ -11,8 +14,10 @@ class Spaceship:
         self.hp = self.maxHp
         self.hpUpPos = True
 
-        self.directionUp = directionUp
         self.screen = pygame.display.get_surface()
+
+        self._point = None
+        self._movePoint = False
 
         self.showHpBox = False
         self.enable = True
@@ -71,6 +76,9 @@ class Spaceship:
         self.rect.x = x
         self.rect.y = y
 
+    def gotoPos(self, pos):
+        self.rect.center = pos
+
     def _draw(self):
         if self.visible:
             self.screen.blit(self._getImg(self.imgId), self.rect)
@@ -85,9 +93,53 @@ class Spaceship:
             y = self.rect.bottom-5
         return [x,y]
 
+    def setMovePoint(self, point):
+        self._movePoint = True
+        self._point = point
+
+    def _moveToPoint(self):
+        if self._movePoint:
+            if self.rect.x<self._point[0]:
+                if self.rect.x+self.vel>=self._point[0]:
+                    self.rect.x = self._point[0]
+                else:
+                    self.rect.x += self.vel
+
+            elif self.rect.x>self._point[0]:
+                if self.rect.x-self.vel<=self._point[0]:
+                    self.rect.x = self._point[0]
+                else:
+                    self.rect.x -= self.vel
+
+            elif self.rect.y < self._point[1]:
+                if self.rect.y + self.vel >= self._point[1]:
+                    self.rect.y = self._point[1]
+                else:
+                    self.rect.y += self.vel
+
+            elif self.rect.y > self._point[1]:
+                if self.rect.y - self.vel <= self._point[1]:
+                    self.rect.y = self._point[1]
+                else:
+                    self.rect.y -= self.vel
+            else:
+                self._movePoint = False
+
+    def ensuringInScreen(self):
+        if not self._movePoint:
+            if self.rect.left<G.srect.left:
+                self.rect.left = G.srect.left
+            elif self.rect.right>G.srect.right:
+                self.rect.right = G.srect.right
+            if self.rect.top<G.srect.top:
+                self.rect.top = G.srect.top
+            elif self.rect.bottom>G.srect.bottom:
+                self.rect.bottom = G.srect.bottom
+
     def update(self):
         if self.enable:
             self._draw()
+            self._moveToPoint()
 
 
 if __name__ == '__main__':
