@@ -32,8 +32,6 @@ class Spaceship:
         il = []
         for img in imgList:
             if type(img) is pygame.Surface:
-                if not self.directionUp:
-                    img = pygame.transform.rotate(img,180)
                 il.append(img)
         if len(il)==0:
             il.append(pygame.Surface(self.rect.size))

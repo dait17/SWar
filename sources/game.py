@@ -24,7 +24,7 @@ class Game:
     def _loadBG(path):
         path = P.getPath(path)
         if os.path.exists(path):
-            img = pygame.image.load(path)
+            img = pygame.image.load(path).convert_alpha()
             return pygame.transform.smoothscale(img, Game.srect.size)
         return None
 
@@ -38,6 +38,14 @@ class Game:
         else:
             Game.screen.fill((255,255,255))
 
+    @staticmethod
+    def showSurface(sur, pos):
+        if type(sur) is pygame.Surface:
+            Game.screen.blit(sur,pos)
+
+    @staticmethod
+    def drawRect(rect, color=(0,255,0), width=0, border_radius = -1):
+        pygame.draw.rect(Game.screen, color, rect, width, border_radius)
 
     @staticmethod
     def _add(orLs: list, *args):
@@ -110,6 +118,7 @@ class Game:
 
     def update(self):
         self._updatePlayer()
+        self._updateEnemy()
         self._updatePlayerBullet()
 
     def run(self):
