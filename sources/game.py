@@ -1,6 +1,7 @@
-import sys
+import sys, os
 
 import pygame
+from path import Path as P
 
 
 class Game:
@@ -14,12 +15,29 @@ class Game:
     srect = screen.get_rect()
     clock = pygame.time.Clock()
     fps = 60
+    bg = None
 
     def __init__(self):
         pass
 
-    def _loadBG(self):
-        pass
+    @staticmethod
+    def _loadBG(path):
+        path = P.getPath(path)
+        if os.path.exists(path):
+            img = pygame.image.load(path)
+            return pygame.transform.smoothscale(img, Game.srect.size)
+        return None
+
+    @staticmethod
+    def setBackground(path):
+        Game.bg = Game._loadBG(path)
+
+    def drawBackground(self):
+        if type(Game.bg) is pygame.Surface:
+            Game.screen.blit(Game.bg, (0,0))
+        else:
+            Game.screen.fill((255,255,255))
+
 
     @staticmethod
     def _add(orLs: list, *args):
@@ -96,7 +114,7 @@ class Game:
 
     def run(self):
         while True:
-            self.screen.fill((255, 255, 255))
+            self.drawBackground()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
