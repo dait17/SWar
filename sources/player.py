@@ -67,6 +67,7 @@ class Player:
         if keyPress[pygame.K_SPACE] and self.bullets.readyShoot():
             bl = self.bullets.getBullets(self.spaceship.getBulletPos())
             Game.ExtendPlayerBullet(bl)
+            self.spaceship.shotEffect(self.bullets.recoil)
 
     def update(self):
         self.spaceship.update()

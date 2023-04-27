@@ -8,6 +8,7 @@ class FireBall(Bullets):
     def __init__(self):
         super(FireBall, self).__init__()
         self.cooldownTime = 300
+        self.recoil = 20
         self.levelMax = 9
         self.imgPath = '..\\assets\\img_bullet\\plasma.png'
         self.img = self._getImg(self.imgPath)

@@ -23,6 +23,21 @@ class Spaceship:
         self.enable = True
         self.visible = True
 
+        # swinging effect
+        self._swingingSetting = False
+        self._swingingTime = 0
+        self.ampMax = 10 # amplitude - bien do dao dong
+        self._Xamp = 0
+        self._Aamp = 0.005
+        self._Vamp = self._Aamp
+
+        # shot effect
+        self.shoting = False
+        self._recoil = 0
+        self._Arecoil = 1
+        self._Vrecoil = self._Arecoil
+        self._Xrecoil = 0
+
     def changeShip(self, imgList, size, vel, maxHp):
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
@@ -37,6 +52,49 @@ class Spaceship:
         center = self.rect.center
         self.rect.size = size
         self.rect.center = center
+
+    def shotEffect(self, recoil):
+        self.shoting = True
+        self._recoil = recoil
+
+    def _effectChangePos(self, amp, ampMax, a, v):
+        amp += v
+        newRect = self.rect.copy()
+        if int(amp) <= ampMax//2:
+            v += a
+            newRect.y += amp
+        elif ampMax//2 < int(amp) <= ampMax:
+            v -= a
+            newRect.y += ampMax - amp
+        else:
+            v = a
+            amp = 0
+        return amp,v,newRect
+
+    def _swingingEffect(self):
+        self._Xamp, self._Vamp, newRect = self._effectChangePos(self._Xamp, self.ampMax, self._Aamp, self._Vamp)
+        return newRect
+
+    def _recoilEffect(self):
+        self._Xrecoil, self._Vrecoil, newRect = self._effectChangePos(self._Xrecoil, self._recoil, self._Arecoil, self._Vrecoil)
+        if self._Xrecoil==0:
+            self.shoting = False
+        return newRect
+
+    def _effect(self):
+        newRect = self.rect.copy()
+        if self.shoting:
+            self._swingingSetting = False
+            newRect = self._recoilEffect()
+        else:
+            if not self._swingingSetting:
+                self._swingingTime = pygame.time.get_ticks()
+                self._swingingSetting = True
+            if pygame.time.get_ticks()-self._swingingTime>=500:
+                newRect = self._swingingEffect()
+
+        return newRect
+
 
     def _initRect(self, pos, size):
         rect = pygame.Rect(0,0,size[0], size[1])
@@ -99,7 +157,7 @@ class Spaceship:
 
     def _draw(self):
         if self.visible:
-            self.screen.blit(self._getImg(self.imgId), self.rect)
+            self.screen.blit(self._getImg(self.imgId), self._effect())
             self._handleImgId()
             self._showHp()
 
@@ -109,6 +167,7 @@ class Spaceship:
             y = self.rect.top+5
         else:
             y = self.rect.bottom-5
+
         return [x,y]
 
     def setMovePoint(self, point):

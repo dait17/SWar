@@ -6,7 +6,8 @@ from path import Path as P
 
 class Bullets(ABC):
     def __init__(self):
-        self.cooldownTime = 500 #ms
+        self.cooldownTime = 0 #ms
+        self.recoil = 0
         self.time = 0
         self.imgPath = ''
         self.img = None

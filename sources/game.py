@@ -80,7 +80,13 @@ class Game:
 
     @staticmethod
     def AddEnemy(*enemy):
+        print(enemy)
         Game._add(Game.enemyList, *enemy)
+
+    @staticmethod
+    def ExtendEnemy(enemyList):
+        for e in enemyList:
+            Game._add(Game.enemyList, e)
 
     @staticmethod
     def AddPlayerBullet(*bullets):

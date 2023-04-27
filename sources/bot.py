@@ -103,8 +103,10 @@ class BBot:
             self._moving = moving
 
     def showOrbit(self):
-        Game.drawRect(self._pointRectX)
-        Game.drawRect(self._pointRectY, (0,0,255))
+        if type(self._pointRectX) is pygame.Surface:
+            Game.drawRect(self._pointRectX)
+        if type(self._pointRectY) is pygame.Surface:
+            Game.drawRect(self._pointRectY, (0,0,255))
 
 
 class NormalBot(BBot):

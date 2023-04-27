@@ -21,6 +21,13 @@ class Path:
         path = path.strip('\\')
         return Path.getMotherPath() + '\\' + path
 
+    @staticmethod
+    def fillPath(path:str):
+        st = path.index(Path.motherFol)+len(Path.motherFol) if Path.motherFol in path else 0
+        path = path[st:]
+        path = path.strip('..')
+        path = path.strip('\\')
+        return path
 
 
 if __name__ == '__main__':
