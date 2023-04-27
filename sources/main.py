@@ -9,6 +9,7 @@ G.setBackground('..\\assets\\img_background\\bg2.jpg')
 
 player = Player()
 enemy = BotAlien()
+enemy.spaceship.setShowHp(True, True)
 enemy.setPointList([[200,300], [600,None], [1000, 100]])
 
 G.AddPlayer(player)

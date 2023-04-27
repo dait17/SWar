@@ -23,10 +23,30 @@ class Spaceship:
         self.enable = True
         self.visible = True
 
+    def changeShip(self, imgList, size, vel, maxHp):
+        self.imgList = self._fixImg(imgList)
+        self.imgId = 0
+
+        self.rect = self._initRect(self.rect.center, size)
+        self.vel = vel
+        curHp = round(self.hp/self.maxHp)*maxHp
+        self.maxHp = maxHp
+        self.hp = curHp
+
+    def setSize(self, size):
+        center = self.rect.center
+        self.rect.size = size
+        self.rect.center = center
+
     def _initRect(self, pos, size):
         rect = pygame.Rect(0,0,size[0], size[1])
         rect.center = pos
         return rect
+
+    def health(self, value):
+        self.hp += value
+        if self.hp>self.maxHp:
+            self.hp = self.maxHp
 
     def _fixImg(self, imgList):
         il = []
