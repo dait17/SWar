@@ -5,13 +5,14 @@ from path import Path as P
 
 
 class Game:
+    map = None
     enemyList = []
     bullEnemyList = []
 
     playerList = []
     bullPlayerList = []
 
-    screen = pygame.display.set_mode((1300, 750))
+    screen = pygame.display.set_mode((1200, 750))
     srect = screen.get_rect()
     clock = pygame.time.Clock()
     fps = 60
@@ -19,6 +20,10 @@ class Game:
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def setMap(map):
+        Game.map = map
 
     @staticmethod
     def _loadBG(path):
@@ -134,7 +139,8 @@ class Game:
     @staticmethod
     def run():
         while True:
-            Game.drawBackground()
+            if Game.map is not None:
+                Game.map.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

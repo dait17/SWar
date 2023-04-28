@@ -107,11 +107,13 @@ class Background:
     def __init__(self, imgList, ops):
         self.imgList = imgList
         self.rectList = None
+        self._xList = []
         self.ops = ops
-        self._setup(imgList, ops)
         self.maxWidth = 0
+
+        self._setup(self.imgList, ops)
         self.imgRect = None
-        self._v = 0.1
+        self._v = 1
 
     def _setup(self, imgList:list[pygame.Surface], ops:str):
         rl = []
@@ -119,22 +121,33 @@ class Background:
         if ops.upper() == 'REPEAT':
             if len(imgList) == 1:
                 imgList.append(imgList[0].copy())
+            print(len(self.imgList))
         for img in imgList:
             rect = img.get_rect(y=0)
             rect.left = st
             rl.append(rect)
+            self._xList.append(rect.x)
             st += rect.right
             self.maxWidth += rect.width
         self.rectList = rl
 
     def _updateRect(self):
-        for rect in self.rectList:
-            rect.x -= self._v
-            if rect.right <0:
-                rect.x = self.maxWidth
+        for i in range(len(self.rectList)):
+            self._xList[i] -= self._v
+            self.rectList[i].x = self._xList[i]
+            if self.rectList[i].right< 0:
+                self._xList[i] = 0
+
+        # for rect in self.rectList:
+        #
+        #     rect.x -= self._v
+        #     if rect.right <0:
+        #         rect.x = self.maxWidth
+
 
     def update(self):
         if len(self.imgList)>0:
+            self._updateRect()
             for i in range(len(self.imgList)):
                 Game.blit(self.imgList[i], self.rectList[i])
         else:
@@ -248,7 +261,7 @@ class SetPointList:
 
 if __name__ == '__main__':
     map = Map(r"assets\map\map1.json")
-    map.update()
+    Game.setMap(map)
     Game.run()
     # map = readFile(r'D:\Workspace\python_project\pygame_pr\SWar\assets\map\map1.json')
     # rounds = map.get('rounds')
