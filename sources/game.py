@@ -32,7 +32,8 @@ class Game:
     def setBackground(path):
         Game.bg = Game._loadBG(path)
 
-    def drawBackground(self):
+    @staticmethod
+    def drawBackground():
         if type(Game.bg) is pygame.Surface:
             Game.screen.blit(Game.bg, (0,0))
         else:
@@ -80,7 +81,6 @@ class Game:
 
     @staticmethod
     def AddEnemy(*enemy):
-        print(enemy)
         Game._add(Game.enemyList, *enemy)
 
     @staticmethod
@@ -104,39 +104,44 @@ class Game:
     def ExtendEnemyBullet(bullets):
         Game._extend(Game.bullEnemyList, bullets)
 
-    def _updatePlayer(self):
+    @staticmethod
+    def blit(sur,rect):
+        Game.screen.blit(sur, rect)
+    @staticmethod
+    def _updatePlayer():
         for p in Game.playerList:
             p.update()
-
-    def _updateEnemy(self):
+    @staticmethod
+    def _updateEnemy():
         for e in Game.enemyList:
             e.update()
-
-    def _updatePlayerBullet(self):
+    @staticmethod
+    def _updatePlayerBullet():
         for b in Game.bullPlayerList:
             b.update()
             Game._removeDisable(Game.bullPlayerList, b)
 
-    def _updateEnemyBullet(self):
+    @staticmethod
+    def _updateEnemyBullet():
         for b in Game.bullEnemyList:
             b.update()
             Game._removeDisable(Game.bullEnemyList, b)
-
-    def update(self):
-        self._updatePlayer()
-        self._updateEnemy()
-        self._updatePlayerBullet()
-
-    def run(self):
+    @staticmethod
+    def update():
+        Game._updatePlayer()
+        Game._updateEnemy()
+        Game._updatePlayerBullet()
+    @staticmethod
+    def run():
         while True:
-            self.drawBackground()
+            Game.drawBackground()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            self.update()
+            Game.update()
             pygame.display.flip()
-            self.clock.tick(self.fps)
+            Game.clock.tick(Game.fps)
 
 
 if __name__ == '__main__':

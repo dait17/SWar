@@ -9,6 +9,24 @@ from attackSystem import AttackSystem as Att
 from messageBox import MessageBox as mb
 
 
+class Bots:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def getBot(botName:str):
+        botName = botName.upper()
+        if botName == 'ALIEN':
+            return BotAlien()
+
+    @staticmethod
+    def getGroupBot(botName, quantity:int):
+        gb = []
+        for _ in range(quantity):
+            gb.append(Bots.getBot(botName))
+        return gb
+
+
 class BBot:
     def __init__(self):
         self.spaceship = None
