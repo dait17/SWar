@@ -102,10 +102,13 @@ class Bullet(SBullet):
         if not self.rect.colliderect(self.area):
             self.enable = False
 
-    def collide(self):
-        self.durability -= 1
-        if self.durability <=0:
-            self.enable = False
+    def collide(self, rect:pygame.Rect):
+        if self.rect.colliderect(rect):
+            self.durability -= 1
+            if self.durability <=0:
+                self.enable = False
+            return True
+        return False
 
     def update(self):
         # pygame.draw.line(self.screen, (0,0,255), self.start, self.end)

@@ -7,6 +7,7 @@ class Spaceship:
         self.directionUp = directionUp
 
         self.rect = self._initRect(pos, size)
+        self._curRect = self.rect.copy()
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
         self.vel = vel
@@ -38,6 +39,14 @@ class Spaceship:
         self._Vrecoil = self._Arecoil
         self._Xrecoil = 0
 
+        # Wavering
+        self.wavering = False
+        self._AmpW = 5
+        self._AW = 0.5
+        self._VW = self._AW
+        self._XW = 0
+
+
     def changeShip(self, imgList, size, vel, maxHp):
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
@@ -57,15 +66,23 @@ class Spaceship:
         self.shoting = True
         self._recoil = recoil
 
-    def _effectChangePos(self, amp, ampMax, a, v):
+    def _sChange(self, rect, d, changeX, changeY):
+        if changeX:
+            rect.x += d
+        if changeY:
+            rect.y += d
+
+    def _effectChangePos(self, amp, ampMax, a, v,changeX:bool=False, changeY:bool=True):
         amp += v
         newRect = self.rect.copy()
         if int(amp) <= ampMax//2:
             v += a
-            newRect.y += amp
+            self._sChange(newRect, amp, changeX, changeY)
+            # newRect.y += amp
         elif ampMax//2 < int(amp) <= ampMax:
             v -= a
-            newRect.y += ampMax - amp
+            self._sChange(newRect, ampMax - amp, changeX, changeY)
+            # newRect.y += ampMax - amp
         else:
             v = a
             amp = 0
@@ -81,11 +98,20 @@ class Spaceship:
             self.shoting = False
         return newRect
 
+    def _waveringEffect(self):
+        self._XW, self._VW, newRect = self._effectChangePos(self._XW,self._AmpW, self._AW, self._VW, True)
+        if self._XW==0:
+            self.wavering = False
+        return newRect
+
     def _effect(self):
         newRect = self.rect.copy()
         if self.shoting:
             self._swingingSetting = False
             newRect = self._recoilEffect()
+        elif self.wavering:
+            self._swingingSetting = False
+            newRect = self._waveringEffect()
         else:
             if not self._swingingSetting:
                 self._swingingTime = pygame.time.get_ticks()
@@ -93,13 +119,19 @@ class Spaceship:
             if pygame.time.get_ticks()-self._swingingTime>=500:
                 newRect = self._swingingEffect()
 
-        return newRect
+        self._curRect = newRect
 
 
     def _initRect(self, pos, size):
         rect = pygame.Rect(0,0,size[0], size[1])
         rect.center = pos
         return rect
+
+    def beShot(self, dmg):
+        self.wavering = True
+        self.hp -= dmg
+        if self.hp<=0:
+            self.enable = False
 
     def health(self, value):
         self.hp += value
@@ -138,7 +170,7 @@ class Spaceship:
         if self.imgId>=len(self.imgList):
             self.imgId = 0
 
-    def setShowHp(self, value:bool, upPos:bool):
+    def setShowHp(self, value:bool, upPos:bool=True):
         self.showHpBox = value
         self.hpUpPos = upPos
 
@@ -157,7 +189,7 @@ class Spaceship:
 
     def _draw(self):
         if self.visible:
-            self.screen.blit(self._getImg(self.imgId), self._effect())
+            self.screen.blit(self._getImg(self.imgId), self._curRect)
             self._handleImgId()
             self._showHp()
 
@@ -215,8 +247,10 @@ class Spaceship:
 
     def update(self):
         if self.enable:
+            self._effect()
             self._draw()
             self._moveToPoint()
+
 
 
 if __name__ == '__main__':

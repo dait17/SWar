@@ -39,6 +39,7 @@ class Map:
         self.curRound = None
         self._setupRound()
         self._win = False
+        self._wTime = 0
         self._trans = False
 
     def _loadImg(self, path):
@@ -95,12 +96,18 @@ class Map:
             else:
                 Game.ExtendEnemy(nbots)
 
+    def _won(self):
+        if self._wTime==0:
+            self._wTime = pygame.time.get_ticks()
+        elif pygame.time.get_ticks()-self._wTime>=1000:
+            MessageBox.show('You win!', '', Game.srect.center)
+
     def update(self):
         self.background.update()
         if not self._win:
             self._handleRound()
-
-
+        else:
+            self._won()
 
 
 class Background:
@@ -113,14 +120,16 @@ class Background:
 
         self._setup(self.imgList, ops)
         self.imgRect = None
-        self._v = 1
+        self._v = 0.1
 
     def _setup(self, imgList:list[pygame.Surface], ops:str):
         rl = []
         st = 0
         if ops.upper() == 'REPEAT':
             if len(imgList) == 1:
-                imgList.append(imgList[0].copy())
+                newImg = imgList[0].copy()
+                newImg = pygame.transform.flip(newImg, True, False)
+                imgList.append(newImg)
             print(len(self.imgList))
         for img in imgList:
             rect = img.get_rect(y=0)
@@ -135,15 +144,8 @@ class Background:
         for i in range(len(self.rectList)):
             self._xList[i] -= self._v
             self.rectList[i].x = self._xList[i]
-            if self.rectList[i].right< 0:
-                self._xList[i] = 0
-
-        # for rect in self.rectList:
-        #
-        #     rect.x -= self._v
-        #     if rect.right <0:
-        #         rect.x = self.maxWidth
-
+            if self.rectList[i].right < 0:
+                self._xList[i] = self.maxWidth//len(self.rectList)
 
     def update(self):
         if len(self.imgList)>0:
@@ -262,6 +264,7 @@ class SetPointList:
 if __name__ == '__main__':
     map = Map(r"assets\map\map1.json")
     Game.setMap(map)
+    Game.AddPlayer(Player())
     Game.run()
     # map = readFile(r'D:\Workspace\python_project\pygame_pr\SWar\assets\map\map1.json')
     # rounds = map.get('rounds')

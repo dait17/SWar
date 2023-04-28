@@ -16,8 +16,12 @@ class Bots:
     @staticmethod
     def getBot(botName:str):
         botName = botName.upper()
+        bot = None
         if botName == 'ALIEN':
-            return BotAlien()
+            bot = BotAlien()
+        if bot is not  None:
+            bot.spaceship.setShowHp(True, True)
+        return bot
 
     @staticmethod
     def getGroupBot(botName, quantity:int):

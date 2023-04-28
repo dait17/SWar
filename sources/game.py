@@ -4,6 +4,7 @@ import pygame
 from path import Path as P
 
 
+
 class Game:
     map = None
     enemyList = []
@@ -81,6 +82,15 @@ class Game:
         return True
 
     @staticmethod
+    def _removeShipDisable(orLs:list, ship):
+        try:
+            if not ship.spaceship.enable:
+                Game._removeOB(orLs, ship)
+        except Exception:
+            return False
+        return True
+
+    @staticmethod
     def AddPlayer(*player):
         Game._add(Game.playerList, *player)
 
@@ -112,30 +122,43 @@ class Game:
     @staticmethod
     def blit(sur,rect):
         Game.screen.blit(sur, rect)
+
     @staticmethod
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
+
     @staticmethod
     def _updateEnemy():
         for e in Game.enemyList:
             e.update()
+            Game._removeShipDisable(Game.enemyList, e)
+
     @staticmethod
     def _updatePlayerBullet():
         for b in Game.bullPlayerList:
             b.update()
+            for e in Game.enemyList:
+                if b.collide(e.spaceship.rect):
+                    e.spaceship.beShot(b.dmg)
             Game._removeDisable(Game.bullPlayerList, b)
+
 
     @staticmethod
     def _updateEnemyBullet():
         for b in Game.bullEnemyList:
             b.update()
+            for p in Game.playerList:
+                if b.collide(p.spaceship.rect):
+                    p.spaceship.beShot(b.dmg)
             Game._removeDisable(Game.bullEnemyList, b)
+
     @staticmethod
     def update():
         Game._updatePlayer()
         Game._updateEnemy()
         Game._updatePlayerBullet()
+
     @staticmethod
     def run():
         while True:
