@@ -1,20 +1,21 @@
 import sys, os
 
 import pygame
-from path import Path as P
+from gameTools import *
 
 
 
 class Game:
     frame = None
     map = None
+    playing = False
     enemyList = []
     bullEnemyList = []
 
     playerList = []
     bullPlayerList = []
 
-    screen = pygame.display.set_mode((1200, 750))
+    screen = pygame.display.get_surface()
     srect = screen.get_rect()
     clock = pygame.time.Clock()
     fps = 60
@@ -30,19 +31,9 @@ class Game:
 
     @staticmethod
     def setMap(map):
+        Game.playing = True
         Game.map = map
 
-    @staticmethod
-    def _loadBG(path):
-        path = P.getPath(path)
-        if os.path.exists(path):
-            img = pygame.image.load(path).convert_alpha()
-            return pygame.transform.smoothscale(img, Game.srect.size)
-        return None
-
-    @staticmethod
-    def setBackground(path):
-        Game.bg = Game._loadBG(path)
 
     @staticmethod
     def drawBackground():
@@ -131,8 +122,17 @@ class Game:
 
     @staticmethod
     def _updateFrame():
-        if Game.frame is not None:
+        if not Game.playing and Game.frame is not None:
             Game.frame.update()
+
+    @staticmethod
+    def _updateMap():
+        if Game.playing and Game.map is not None:
+            Game.map.update()
+            if not Game.map.enable:
+                Game.playing = False
+        else:
+            Game.map = None
 
     @staticmethod
     def _updatePlayer():
@@ -166,16 +166,20 @@ class Game:
 
     @staticmethod
     def update():
-        Game._updateFrame()
-        Game._updatePlayer()
-        Game._updateEnemy()
-        Game._updatePlayerBullet()
+        if Game.playing:
+            Game._updateMap()
+            Game._updatePlayer()
+            Game._updateEnemy()
+            Game._updatePlayerBullet()
+        else:
+            Game._updateFrame()
+
 
     @staticmethod
     def run():
         while True:
-            if Game.map is not None:
-                Game.map.update()
+            # if Game.map is not None:
+            #     Game.map.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

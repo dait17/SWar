@@ -1,12 +1,10 @@
 import pygame
 
 from spaceship import Spaceship
-from abc import ABC, abstractmethod
 from handbleJson import *
 from path import Path
 from game import Game
 from attackSystem import AttackSystem as Att
-from messageBox import MessageBox as mb
 
 
 class Bots:
@@ -81,9 +79,6 @@ class BBot:
         if self._moving:
             sRect = pygame.Rect(0,0,self.spaceship.vel,self.spaceship.vel)
             sRect.center = self.spaceship.rect.center
-            mb.show('sRect: ', sRect,[10,20])
-            mb.show('pointX: ', self._pointRectX, [10,40])
-            mb.show('pointY: ', self._pointRectY, [10,60])
 
             if not sRect.colliderect(self._pointRectX):
                 if sRect.centerx<self._pointRectX.centerx:
@@ -103,9 +98,6 @@ class BBot:
         if self._moving:
             sRect = pygame.Rect(0,0,self.spaceship.vel,self.spaceship.vel)
             sRect.center = self.spaceship.rect.center
-            mb.show('sRect: ', sRect,[10,20])
-            mb.show('pointX: ', self._pointRectX, [10,40])
-            mb.show('pointY: ', self._pointRectY, [10,60])
 
             moving = False
 
@@ -172,7 +164,7 @@ class BotAlien(NormalBot):
         self.path = '..\\assets\\Bot\\alien.json'
         self.spaceship = self._loadShip(self.path)
         self.bullets = Att.getBullets("fireball")
-        self.movementType = "2-D"
+        self.movementType = "1-D"
 
     def update(self):
         self.showOrbit()

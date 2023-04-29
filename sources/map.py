@@ -40,7 +40,9 @@ class Map:
         self._setupRound()
         self._win = False
         self._wTime = 0
+        self._enableTime = 0
         self._trans = False
+        self.enable = True
 
     def _loadImg(self, path):
         path = Path.getPath(path)
@@ -101,8 +103,13 @@ class Map:
             self._wTime = pygame.time.get_ticks()
         elif pygame.time.get_ticks()-self._wTime>=1000:
             MessageBox.show('You win!', '', Game.srect.center)
+            if self._enableTime==0:
+                self._enableTime = pygame.time.get_ticks()
+            elif pygame.time.get_ticks() - self._enableTime>=1000:
+                self.enable = False
 
     def update(self):
+        print(len(Game.enemyList))
         self.background.update()
         if not self._win:
             self._handleRound()
