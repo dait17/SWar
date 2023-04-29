@@ -2,8 +2,7 @@ import pygame.image
 
 from spaceship import Spaceship
 from attackSystem import AttackSystem as Att
-from handbleJson import *
-from path import Path as P
+from gameTools import *
 from game import Game
 
 
@@ -11,16 +10,16 @@ class Player:
     def __init__(self):
         self.spaceship = self._shipInit('..\\assets\\Ship\\ship1.json')
         self.bullets = Att.getBullets("fireball")
-        self.bullets.setLevel(9)
+        self.bullets.setLevel(1)
 
     def _loadInfo(self, shipPath):
-        return readFile(shipPath)
+        return HandleJson.readFile(shipPath)
 
     def _loadImgList(self, listPath: list):
         img = []
         try:
             for path in listPath:
-                img.append(pygame.image.load(P.getPath(path)).convert_alpha())
+                img.append(Image.load(path))
         except Exception:
             pass
         return img
@@ -32,14 +31,15 @@ class Player:
         return sp
 
     def _setShip(self, shipPath: str, pos):
-        shipInfo = readFile(shipPath)
+        shipInfo = HandleJson.readFile(shipPath)
         imgList = self._loadImgList(shipInfo.get('imgPathList'))
         return Spaceship(imgList, pos, shipInfo.get('size'), shipInfo.get('vel'), shipInfo.get('hp'), True)
 
-    def setShip(self, path):
-        oldPos = self.spaceship.rect.center
-        sp = self._setShip(path, oldPos)
-        self.spaceship = sp
+    def setShip(self, imgList, size, vel, maxHp):
+        try:
+            self.spaceship.changeShip(imgList, size, vel, maxHp)
+        except Exception:
+            pass
 
     def _movementKey(self):
         keyPress = pygame.key.get_pressed()

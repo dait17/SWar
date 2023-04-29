@@ -15,11 +15,17 @@ class Game:
     playerList = []
     bullPlayerList = []
 
+    itemList = []
+
     screen = pygame.display.get_surface()
     srect = screen.get_rect()
     clock = pygame.time.Clock()
     fps = 60
     bg = None
+
+    # Event
+    EventBotDefeat = False
+    EventBotDefeatPos = None
 
     def __init__(self):
         pass
@@ -88,6 +94,11 @@ class Game:
         return True
 
     @staticmethod
+    def AddItem(*items):
+        for item in list(items):
+            Game.itemList.append(item)
+
+    @staticmethod
     def AddPlayer(*player):
         Game._add(Game.playerList, *player)
 
@@ -139,15 +150,26 @@ class Game:
             Game.map = None
 
     @staticmethod
+    def _updateItem():
+        for item in Game.itemList:
+            item.update()
+            Game._removeDisable(Game.itemList, item)
+
+    @staticmethod
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
 
     @staticmethod
     def _updateEnemy():
+        Game.EventBotDefeat = False
+        Game.EventBotDefeatPos = None
         for e in Game.enemyList:
             e.update()
-            Game._removeShipDisable(Game.enemyList, e)
+            pos = e.spaceship.getCurRect().center
+            if Game._removeShipDisable(Game.enemyList, e):
+                Game.EventBotDefeat = True
+                Game.EventBotDefeatPos = pos
 
     @staticmethod
     def _updatePlayerBullet():
@@ -164,7 +186,7 @@ class Game:
         for b in Game.bullEnemyList:
             b.update()
             for p in Game.playerList:
-                if b.collide(p.spaceship.rect):
+                if b.collide(p.spaceship.getCurRect()):
                     p.spaceship.beShot(b.dmg)
             Game._removeDisable(Game.bullEnemyList, b)
 
@@ -172,6 +194,7 @@ class Game:
     def update():
         if Game.playing:
             Game._updateMap()
+            Game._updateItem()
             Game._updatePlayer()
             Game._updateEnemy()
             Game._updatePlayerBullet()
@@ -182,8 +205,7 @@ class Game:
     @staticmethod
     def run():
         while True:
-            # if Game.map is not None:
-            #     Game.map.update()
+            Game.drawBackground()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

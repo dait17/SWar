@@ -70,6 +70,15 @@ class Image:
                 return None
 
     @staticmethod
+    def loadImgList(pathList):
+        imgList = []
+        for path in pathList:
+            img = Image.load(path)
+            if img is not None:
+                imgList.append(img)
+        return imgList
+
+    @staticmethod
     def smothscale(sur, size):
         try:
             return pygame.transform.smoothscale(sur, size)

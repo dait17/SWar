@@ -46,7 +46,6 @@ class Spaceship:
         self._VW = self._AW
         self._XW = 0
 
-
     def changeShip(self, imgList, size, vel, maxHp):
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
@@ -146,6 +145,9 @@ class Spaceship:
         if len(il)==0:
             il.append(pygame.Surface(self.rect.size))
         return il
+
+    def getCurRect(self):
+        return self._curRect
 
     def _getHpBox(self):
         box = pygame.Rect(0,0,self.rect.height, 4)

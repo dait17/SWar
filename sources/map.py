@@ -7,6 +7,7 @@ from bot import *
 from game import Game
 from messageBox import MessageBox
 from player import Player
+from items import Items
 
 
 class MapTool:
@@ -35,6 +36,7 @@ class Map:
         Game.setPlayer([Player()])
         self.data = self._loadData(mapPath)
         self.background = self.getBackground()
+        self.items = self._getItems()
         self.rounds = []
         self.roundId = 0
         self.curRound = None
@@ -110,12 +112,17 @@ class Map:
                 self.enable = False
 
     def update(self):
-        print(len(Game.enemyList))
         self.background.update()
         if not self._win:
             self._handleRound()
+            self.items.update()
         else:
             self._won()
+
+    def _getItems(self):
+        dropRate = self.data.get("items")
+        return Items(dropRate)
+
 
 
 class Background:
@@ -144,8 +151,8 @@ class Background:
             rect.left = st
             rl.append(rect)
             self._xList.append(rect.x)
-            st += rect.right
-            self.maxWidth += rect.width
+            st += rect.right-1
+            self.maxWidth += rect.width-1
         self.rectList = rl
 
     def _updateRect(self):
