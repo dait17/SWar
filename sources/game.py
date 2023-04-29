@@ -6,6 +6,7 @@ from path import Path as P
 
 
 class Game:
+    frame = None
     map = None
     enemyList = []
     bullEnemyList = []
@@ -21,6 +22,11 @@ class Game:
 
     def __init__(self):
         pass
+
+    @staticmethod
+    def setFrame(frame):
+        Game.frame = frame
+
 
     @staticmethod
     def setMap(map):
@@ -124,6 +130,11 @@ class Game:
         Game.screen.blit(sur, rect)
 
     @staticmethod
+    def _updateFrame():
+        if Game.frame is not None:
+            Game.frame.update()
+
+    @staticmethod
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
@@ -155,6 +166,7 @@ class Game:
 
     @staticmethod
     def update():
+        Game._updateFrame()
         Game._updatePlayer()
         Game._updateEnemy()
         Game._updatePlayerBullet()
