@@ -32,6 +32,7 @@ class MapTool:
 
 class Map:
     def __init__(self, mapPath):
+        Game.setPlayer([Player()])
         self.data = self._loadData(mapPath)
         self.background = self.getBackground()
         self.rounds = []
@@ -105,7 +106,7 @@ class Map:
             MessageBox.show('You win!', '', Game.srect.center)
             if self._enableTime==0:
                 self._enableTime = pygame.time.get_ticks()
-            elif pygame.time.get_ticks() - self._enableTime>=1000:
+            elif pygame.time.get_ticks() - self._enableTime>=3000:
                 self.enable = False
 
     def update(self):

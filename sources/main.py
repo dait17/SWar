@@ -5,9 +5,6 @@ from map import SetPointList
 from frame import MainFrame, MapFrame
 
 
-
-player = Player()
-Game.AddPlayer(player)
 Game.setFrame(MainFrame())
 Game.run()
 

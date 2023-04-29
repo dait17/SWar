@@ -101,6 +101,10 @@ class Game:
             Game._add(Game.enemyList, e)
 
     @staticmethod
+    def setPlayer(playerList):
+        Game.playerList = playerList
+
+    @staticmethod
     def AddPlayerBullet(*bullets):
         Game._add(Game.bullPlayerList, *bullets)
 
