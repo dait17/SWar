@@ -35,6 +35,7 @@ class BBot:
         self.bullets = None
 
         self._moving = False
+        self._pointRect =None
 
         self._pointRectX = None
         self._pointRectY = None
@@ -54,6 +55,8 @@ class BBot:
 
     def _setPointRect(self, point:list):
         rect = pygame.Rect(0,0,self.spaceship.vel,self.spaceship.vel)
+        self._pointRect = rect.copy()
+        self._pointRect.center = point
 
         self._pointRectY = rect.copy()
         self._pointRectY.width = Game.srect.width + 2000
@@ -75,46 +78,55 @@ class BBot:
         self._setPointRect(point)
         self._moving = True
 
-    def _moveToPoint_1(self):
+    def __moveX(self, sRect, twoAxis:bool=False):
+        hadMove = True
+        if sRect.centerx < self._pointRect.centerx:
+            self.spaceship.rect.centerx += self.spaceship.vel
+        elif sRect.centerx > self._pointRect.centerx:
+            self.spaceship.rect.centerx -= self.spaceship.vel
+        else:
+            hadMove = False
+
+        if hadMove and not twoAxis:
+            return
+
+        if sRect.centery < self._pointRect.centery:
+            self.spaceship.rect.centery += self.spaceship.vel
+        elif sRect.centery > self._pointRect.centery:
+            self.spaceship.rect.centery -= self.spaceship.vel
+
+    def __moveY(self, sRect,twoAxis:bool=False):
+        hadMove = True
+        if sRect.centery < self._pointRect.centery:
+            self.spaceship.rect.centery += self.spaceship.vel
+        elif sRect.centery > self._pointRect.centery:
+            self.spaceship.rect.centery -= self.spaceship.vel
+        else:
+            hadMove = False
+        if hadMove and not twoAxis:
+            return
+        if sRect.centerx < self._pointRect.centerx:
+            self.spaceship.rect.centerx += self.spaceship.vel
+        elif sRect.centerx > self._pointRect.centerx:
+            self.spaceship.rect.centerx -= self.spaceship.vel
+
+    def _moveToPoint(self, X:bool=True, Y: bool=False):
+        # print(self._pointRect.center)
         if self._moving:
-            sRect = pygame.Rect(0,0,self.spaceship.vel,self.spaceship.vel)
+            sRect = pygame.Rect(0, 0, self.spaceship.vel, self.spaceship.vel)
             sRect.center = self.spaceship.rect.center
-
-            if not sRect.colliderect(self._pointRectX):
-                if sRect.centerx<self._pointRectX.centerx:
-                    self.spaceship.rect.centerx += self.spaceship.vel
-                elif sRect.centerx>self._pointRectX.centerx:
-                    self.spaceship.rect.centerx -= self.spaceship.vel
-
-            elif not sRect.colliderect(self._pointRectY):
-                if sRect.centery<self._pointRectY.centery:
-                    self.spaceship.rect.centery += self.spaceship.vel
+            if not sRect.colliderect(self._pointRect):
+                if X and Y:
+                    self.__moveX(sRect, True)
+                elif X:
+                    self.__moveX(sRect)
+                elif Y:
+                    self.__moveY(sRect)
                 else:
-                    self.spaceship.rect.centery -= self.spaceship.vel
+                    self.__moveY(sRect, True)
+
             else:
                 self._moving = False
-
-    def _moveToPoint_2(self):
-        if self._moving:
-            sRect = pygame.Rect(0,0,self.spaceship.vel,self.spaceship.vel)
-            sRect.center = self.spaceship.rect.center
-
-            moving = False
-
-            if not sRect.colliderect(self._pointRectX):
-                moving = True
-                if sRect.centerx<self._pointRectX.centerx:
-                    self.spaceship.rect.centerx += self.spaceship.vel
-                elif sRect.centerx>self._pointRectX.centerx:
-                    self.spaceship.rect.centerx -= self.spaceship.vel
-
-            if not sRect.colliderect(self._pointRectY):
-                moving = True
-                if sRect.centery<self._pointRectY.centery:
-                    self.spaceship.rect.centery += self.spaceship.vel
-                else:
-                    self.spaceship.rect.centery -= self.spaceship.vel
-            self._moving = moving
 
     def showOrbit(self):
         if type(self._pointRectX) is pygame.Surface:
@@ -147,9 +159,15 @@ class NormalBot(BBot):
 
     def _move(self):
         if self.movementType=="1-D":
-            self._moveToPoint_1()
+            self._moveToPoint()
         elif  self.movementType=="2-D":
-            self._moveToPoint_2()
+            self._moveToPoint(True, True)
+        elif self.movementType=="D-1":
+            self._moveToPoint(False, True)
+        elif  self.movementType=="D-2":
+            self._moveToPoint(False, False)
+        else:
+            self._moveToPoint()
 
     def _handleMove(self):
         self._move()
@@ -164,19 +182,13 @@ class BotAlien(NormalBot):
         self.path = '..\\assets\\Bot\\alien.json'
         self.spaceship = self._loadShip(self.path)
         self.bullets = Att.getBullets("fireball")
-        self.movementType = "1-D"
+        # self.movementType = "2-D"
+        self.movementType = "D-2"
 
     def update(self):
         self.showOrbit()
         self.spaceship.update()
         self._handleMove()
-
-
-
-
-
-
-
 
 
 
