@@ -163,7 +163,9 @@ class Spaceship:
 
     def _getHpRect(self, hpBox:pygame.Rect):
         rect = hpBox.copy()
+        rect.height -= 2
         rect.width = (self.hp/self.maxHp)*hpBox.width
+        rect.centery = hpBox.centery
         return rect
 
     def _getImg(self, id):

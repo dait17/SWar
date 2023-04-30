@@ -11,6 +11,7 @@ class Player:
         self.spaceship = self._shipInit('..\\assets\\Ship\\ship1.json')
         self.bullets = Att.getBullets("superblue")
         self.bullets.setLevel(7)
+        self.spaceship.beShot(30)
 
     def _loadInfo(self, shipPath):
         return HandleJson.readFile(shipPath)
