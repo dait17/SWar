@@ -39,6 +39,10 @@ class Items:
         l = []
         l.extend(self._createItem(ItemBulletLevelUp, self._dropRate.get('levelUp')))
         l.extend(self._createItem(ItemChangeShip, self._dropRate.get('changeShip')))
+        l.extend(self._createItem(ItemChangeBullets, self._dropRate.get('changeBullet')))
+        l.extend(self._createItem(ItemHealth, self._dropRate.get('health')))
+
+
         return l
 
     def _getItem(self):
@@ -115,6 +119,11 @@ class IItem:
         except Exception:
             return None
 
+    def setImgList(self, imgList):
+        self._imgList = imgList
+        self._imgId = 0
+        self._curImg = self._getImgById()
+
     def _movement(self):
         self._rect.y += self._vel
         if self._rect.top>Screen.sRect.bottom:
@@ -176,6 +185,7 @@ class IItem:
                 break
 
     def update(self):
+        print(len(self._imgList))
         if self.enable:
             self._movement()
             self._effect()
@@ -263,6 +273,60 @@ class ItemShip(IItem):
 
     def _collide(self, player):
         player.setShip(self._imgList, self._shipSize, self._shipVel, self._maxHp)
+
+# ***************************************************************************
+
+
+class ItemChangeBullets:
+    def __init__(self, pos):
+        self._itemList = [{'imgList':Image.loadImgList(['assets\\items\\giftboxs\\giftboxFireBall.png']), 'bulletName': 'FireBall'},
+                          {'imgList':Image.loadImgList(['assets\\items\\giftboxs\\giftboxSuperBlue.png']), 'bulletName': 'SuperBlue'}]
+
+        self._item = self._getItem(pos)
+
+    def _choiceBullet(self):
+        return random.choice(self._itemList)
+
+    def _getItem(self, pos):
+        return ItemBullet(pos, self._choiceBullet())
+
+    def update(self):
+        self._item.update()
+
+
+# ***************************************************************************
+
+# infor {imglist, bulletName}
+class ItemBullet(IItem):
+    def __init__(self, pos:list, infor:dict):
+        super(ItemBullet, self).__init__(pos)
+        self._infor = infor
+        self.setImgList(self._infor.get('imgList'))
+
+    def _effect(self):
+        self._effectHeartbeat()
+
+    def _collide(self, player):
+        player.setBullets(self._infor.get('bulletName'))
+
+# ***************************************************************************
+
+
+class ItemHealth(IItem):
+    def __init__(self, pos):
+        super(ItemHealth, self).__init__(pos)
+        self.setImgList(Image.loadImgList(['assets\\items\\giftboxs\\health1.png',
+                                           'assets\\items\\giftboxs\\health2.png',
+                                           'assets\\items\\giftboxs\\health3.png']))
+
+    def _effect(self):
+        self._effectChangeImg()
+
+    def _collide(self, player):
+        player.spaceship.health(50)
+
+
+
 
 
 
