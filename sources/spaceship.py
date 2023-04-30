@@ -1,5 +1,6 @@
 import pygame
 from game import Game as G
+from messageBox import MessageBox
 
 
 class Spaceship:
@@ -21,6 +22,8 @@ class Spaceship:
         self._movePoint = False
 
         self.showHpBox = False
+        self._showHpBoxCustom = False
+        self._hpBoxCustom = None
         self.enable = True
         self.visible = True
 
@@ -120,7 +123,6 @@ class Spaceship:
 
         self._curRect = newRect
 
-
     def _initRect(self, pos, size):
         rect = pygame.Rect(0,0,size[0], size[1])
         rect.center = pos
@@ -176,11 +178,19 @@ class Spaceship:
         self.showHpBox = value
         self.hpUpPos = upPos
 
+    def setShoHpCustom(self,rect):
+        self._showHpBoxCustom = True
+        self._hpBoxCustom = rect
+
     def _showHp(self):
         if self.showHpBox:
             hpBpx = self._getHpBox()
             pygame.draw.rect(self.screen, (255,255,255), hpBpx, 1,4)
             pygame.draw.rect(self.screen, (255,0,0), self._getHpRect(hpBpx))
+        elif self._showHpBoxCustom:
+            MessageBox.show('Hp: ', '', [self._hpBoxCustom.left-30,self._hpBoxCustom.top], size=18)
+            pygame.draw.rect(self.screen, (255, 255, 255), self._hpBoxCustom, 1, 6)
+            pygame.draw.rect(self.screen, (255, 0, 0), self._getHpRect(self._hpBoxCustom), border_radius=6)
 
     def goto(self, x, y):
         self.rect.x = x

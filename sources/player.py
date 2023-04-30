@@ -28,6 +28,11 @@ class Player:
         pos = [Game.srect.width//2, Game.srect.height+100]
         sp = self._setShip(path, pos.copy())
         sp.setMovePoint([pos[0], pos[1]-250])
+
+        hpRect = pygame.Rect(0,0,80, 20)
+        hpRect.top = Screen.sRect.top + 20
+        hpRect.right = Screen.sRect.right - 20
+        sp.setShoHpCustom(hpRect)
         return sp
 
     def _setShip(self, shipPath: str, pos):
