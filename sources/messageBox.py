@@ -11,7 +11,7 @@ class MessageBox:
 
     @staticmethod
     def show(mess:str, content, pos:list, color=(255,255,255), size:int=14):
-        font = pygame.font.SysFont('comic sans', 14, True)
+        font = pygame.font.SysFont('comic sans', size, True)
         sur = font.render(mess+str(content),True,color)
         Game.showSurface(sur, pos)
 

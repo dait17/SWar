@@ -265,8 +265,6 @@ class Spaceship:
             self._draw()
             self._moveToPoint()
 
-
-
 if __name__ == '__main__':
     from test import Test
     T = Test()

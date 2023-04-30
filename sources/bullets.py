@@ -2,6 +2,7 @@ import pygame, os
 import math
 from abc import ABC, abstractmethod
 from path import Path as P
+from messageBox import MessageBox
 
 
 class Bullets(ABC):
@@ -57,6 +58,7 @@ class SBullet:
         self._x = self.rect.centerx
         self._y = self.rect.centery
         self.img = self._getImg(img)
+        self.curImg = None
 
         self.vel = vel
         self.durability = durability
@@ -65,6 +67,11 @@ class SBullet:
         self._sret = self.screen.get_rect()
         self.area = pygame.Rect(-50, -50, self._sret.width+50, self._sret.height+50)
         self.enable = True
+
+        # Effect
+        self._rotateEffect = False
+        self._eRIV = 1
+        self._curD = 0
 
     def __fit_rect_img(self,rect, img: pygame.Surface):
         new_width = rect.width
@@ -95,13 +102,34 @@ class SBullet:
         return pygame.Surface(self.rect.size).convert_alpha()
 
     def _draw(self):
-        self.screen.blit(self.img, self.rect)
+        self.screen.blit(self.curImg, self.rect)
 
     def goto(self,x,y):
         if x is not None:
             self.rect.x = x
         if y is not None:
             self.rect.y = y
+
+    def _effectRotateImg(self):
+        self._curD += self._eRIV
+        if self._curD>=360:
+            self._curD = 0
+        try:
+            self.curImg = pygame.transform.rotate(self.img, self._curD)
+        except Exception as e:
+            print(e)
+
+    def _effect(self):
+        if self._rotateEffect:
+            self._effectRotateImg()
+        else:
+            if self.img is not None:
+                self.curImg = self.img.copy()
+
+    def setEffect(self, rotaImg:bool=True, V=1):
+        self._rotateEffect = rotaImg
+        self._eRIV = V
+
 
     def gotoPos(self, pos):
         self.rect.center = pos
@@ -116,7 +144,7 @@ class Bullet(SBullet):
     def _getD(self):
         dx = self.vel * math.sin(self.degree * math.pi / 180)
         dy = abs(self.vel * math.cos(self.degree * math.pi / 180))
-        if -90 <= self.degree <= 90:
+        if (-90 <= self.degree <= 90) or (-360<=self.degree<=-270) or (270<=self.degree<=360):
             dy = -dy
         return [dx,dy]
 
@@ -136,10 +164,11 @@ class Bullet(SBullet):
         return False
 
     def update(self):
-        # pygame.draw.line(self.screen, (0,0,255), self.start, self.end)
         if self.enable:
             self._movement()
+            self._effect()
             self._draw()
+
 
 
 

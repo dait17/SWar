@@ -68,14 +68,6 @@ class SuperBlue(Bullets):
 
         self.time = pygame.time.get_ticks()
         return bl
-        # bl = []
-        # degree = self._start_degree()
-        # for i in range(self.level):
-        #     bullet = Bullet( self.img, pos, degree, self.size, self.vel, self.durability, self.dmd)
-        #     bl.append(bullet)
-        #     degree += self.d_degree
-        # self.time = pygame.time.get_ticks()
-        # return bl
 
     def _getBL1(self, pos):
         return [Bullet( self.img, pos, 0, self.size, self.vel, self.durability, self.dmd)]

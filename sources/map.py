@@ -10,27 +10,6 @@ from player import Player
 from items import Items
 
 
-class MapTool:
-    def __init__(self, mapPath):
-        self.mapPath = mapPath
-
-    @staticmethod
-    def choiceFile(motherPath:str):
-        root = tk.Tk()
-        root.withdraw()
-        motherPath = Path.getPath(motherPath)
-        return filedialog.askopenfilename(initialdir=motherPath)
-
-    @staticmethod
-    def getPathAsset():
-        return MapTool.choiceFile('..\\assets')
-
-
-    @staticmethod
-    def AddMap():
-        pass
-
-
 class Map:
     def __init__(self, mapPath):
         Game.setPlayer([Player()])
@@ -41,7 +20,7 @@ class Map:
         self.roundId = 0
         self.curRound = None
         self._setupRound()
-        self._win = False
+        self._win = None
         self._wTime = 0
         self._enableTime = 0
         self._trans = False
@@ -105,7 +84,17 @@ class Map:
         if self._wTime==0:
             self._wTime = pygame.time.get_ticks()
         elif pygame.time.get_ticks()-self._wTime>=1000:
-            MessageBox.show('You win!', '', Game.srect.center)
+            MessageBox.show('You win!', '', Game.srect.center, (0,255,0), 36)
+            if self._enableTime==0:
+                self._enableTime = pygame.time.get_ticks()
+            elif pygame.time.get_ticks() - self._enableTime>=3000:
+                self.enable = False
+
+    def _lose(self):
+        if self._wTime==0:
+            self._wTime = pygame.time.get_ticks()
+        elif pygame.time.get_ticks()-self._wTime>=1000:
+            MessageBox.show('Game Over!', '', Game.srect.center, (255,0,0), 36)
             if self._enableTime==0:
                 self._enableTime = pygame.time.get_ticks()
             elif pygame.time.get_ticks() - self._enableTime>=3000:
@@ -113,11 +102,16 @@ class Map:
 
     def update(self):
         self.background.update()
-        if not self._win:
+        if self._win is None:
             self._handleRound()
             self.items.update()
-        else:
+            if len(Game.playerList)==0:
+                self._win = False
+        elif self._win:
             self._won()
+        else:
+            self._lose()
+
 
     def _getItems(self):
         dropRate = self.data.get("items")

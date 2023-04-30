@@ -2,7 +2,7 @@
   "items": {"levelUp": 0.5, "changeBullet": 0.3, "changeShip": 0.3, "health": 0.4},
   "rounds":
   {"round1": [
-    {"normalBot": [{"botName": "Alien", "quantity": 1, "groupType": "chaining", "distance": [30,30], "bullet": "","bulletLevel": 1, "startPoint": [100, -200],
+    {"normalBot": [{"botName": "Alien", "quantity": 1, "groupType": "chaining", "distance": [30,30], "bullet": "BotBullet1","bulletLevel": 1, "startPoint": [100, -200],
     "pointList": [[100,500], [300, 300], [500,500], [700, 300], [900, 500], [1100, 300], [1200, 400]]}],
     "specialBot": [],
     "boss": []}],

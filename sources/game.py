@@ -31,12 +31,23 @@ class Game:
         pass
 
     @staticmethod
+    def setup():
+        Game.map = None
+        Game.enemyList = []
+        Game.bullEnemyList = []
+
+        Game.bullPlayerList = []
+
+        Game.itemList = []
+
+    @staticmethod
     def setFrame(frame):
         Game.frame = frame
 
 
     @staticmethod
     def setMap(map):
+        Game.setup()
         Game.playing = True
         Game.map = map
 
@@ -146,8 +157,6 @@ class Game:
             Game.map.update()
             if not Game.map.enable:
                 Game.playing = False
-        else:
-            Game.map = None
 
     @staticmethod
     def _updateItem():
@@ -159,6 +168,8 @@ class Game:
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
+            Game._removeShipDisable(Game.playerList, p)
+
 
     @staticmethod
     def _updateEnemy():
@@ -198,6 +209,7 @@ class Game:
             Game._updatePlayer()
             Game._updateEnemy()
             Game._updatePlayerBullet()
+            Game._updateEnemyBullet()
         else:
             Game._updateFrame()
 

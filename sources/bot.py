@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 from spaceship import Spaceship
@@ -128,12 +130,6 @@ class BBot:
             else:
                 self._moving = False
 
-    def showOrbit(self):
-        if type(self._pointRectX) is pygame.Surface:
-            Game.drawRect(self._pointRectX)
-        if type(self._pointRectY) is pygame.Surface:
-            Game.drawRect(self._pointRectY, (0,0,255))
-
 
 class NormalBot(BBot):
     def __init__(self):
@@ -181,12 +177,19 @@ class BotAlien(NormalBot):
         super(BotAlien, self).__init__()
         self.path = '..\\assets\\Bot\\alien.json'
         self.spaceship = self._loadShip(self.path)
-        self.bullets = Att.getBullets("fireball")
+        self.bullets = Att.getBullets("BotBullet1")
         # self.movementType = "2-D"
         self.movementType = "D-2"
 
+    def _shoot(self):
+        shot = random.choice([True, False])
+        if shot and self.bullets.readyShoot():
+            bl = self.bullets.getBullets(self.spaceship.getBulletPos())
+            Game.ExtendEnemyBullet(bl)
+            self.spaceship.shotEffect(self.bullets.recoil)
+
     def update(self):
-        self.showOrbit()
+        self._shoot()
         self.spaceship.update()
         self._handleMove()
 
