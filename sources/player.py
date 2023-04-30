@@ -9,8 +9,8 @@ from game import Game
 class Player:
     def __init__(self):
         self.spaceship = self._shipInit('..\\assets\\Ship\\ship1.json')
-        self.bullets = Att.getBullets("fireball")
-        self.bullets.setLevel(1)
+        self.bullets = Att.getBullets("superblue")
+        self.bullets.setLevel(7)
 
     def _loadInfo(self, shipPath):
         return HandleJson.readFile(shipPath)
@@ -40,6 +40,10 @@ class Player:
             self.spaceship.changeShip(imgList, size, vel, maxHp)
         except Exception:
             pass
+
+    def setBullets(self, bulletName):
+        self.bullets = Att.getBullets(bulletName)
+        self.bullets.setLevel(1)
 
     def _movementKey(self):
         keyPress = pygame.key.get_pressed()

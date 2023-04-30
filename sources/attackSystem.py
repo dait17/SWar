@@ -1,4 +1,4 @@
-from bulletFireBall import FireBall
+from bulletFireBall import FireBall, SuperBlue
 
 
 class AttackSystem:
@@ -9,6 +9,8 @@ class AttackSystem:
     def getBullets(name:str):
         if name.upper()=='FIREBALL':
             return FireBall()
+        elif name.upper()=="SUPERBLUE":
+            return SuperBlue()
 
 
 
