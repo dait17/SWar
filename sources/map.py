@@ -34,7 +34,7 @@ class Map:
             pass
         return None
 
-    def _getBackgrounds(self, pathList:list):
+    def _getBackgrounds(self, pathList: list):
         bgs = []
         for p in pathList:
             img = self._loadImg(p)
@@ -55,13 +55,13 @@ class Map:
 
     def _setupRound(self):
         rounds = self.data.get('rounds')
-        for i in range(0,4):
-            round = Round(rounds.get(f'round{i+1}'))
+        for i in range(0, 4):
+            round = Round(rounds.get(f'round{i + 1}'))
             self.rounds.append(round)
         self.curRound = self.getCurRound(self.roundId)
 
     def getCurRound(self, id):
-        if id>=4:
+        if id >= 4:
             return None
         return self.rounds[id]
 
@@ -72,7 +72,7 @@ class Map:
             self._win = True
 
     def _handleRound(self):
-        if len(Game.enemyList)==0:
+        if len(Game.enemyList) == 0:
             nbots = self.curRound.Next()
             if nbots is None:
                 self._trans = True
@@ -81,23 +81,23 @@ class Map:
                 Game.ExtendEnemy(nbots)
 
     def _won(self):
-        if self._wTime==0:
+        if self._wTime == 0:
             self._wTime = pygame.time.get_ticks()
-        elif pygame.time.get_ticks()-self._wTime>=1000:
-            MessageBox.show('You win!', '', Game.srect.center, (0,255,0), 36)
-            if self._enableTime==0:
+        elif pygame.time.get_ticks() - self._wTime >= 1000:
+            MessageBox.show('You win!', '', Game.srect.center, (0, 255, 0), 36)
+            if self._enableTime == 0:
                 self._enableTime = pygame.time.get_ticks()
-            elif pygame.time.get_ticks() - self._enableTime>=3000:
+            elif pygame.time.get_ticks() - self._enableTime >= 3000:
                 self.enable = False
 
     def _lose(self):
-        if self._wTime==0:
+        if self._wTime == 0:
             self._wTime = pygame.time.get_ticks()
-        elif pygame.time.get_ticks()-self._wTime>=1000:
-            MessageBox.show('Game Over!', '', Game.srect.center, (255,0,0), 36)
-            if self._enableTime==0:
+        elif pygame.time.get_ticks() - self._wTime >= 1000:
+            MessageBox.show('Game Over!', '', Game.srect.center, (255, 0, 0), 36)
+            if self._enableTime == 0:
                 self._enableTime = pygame.time.get_ticks()
-            elif pygame.time.get_ticks() - self._enableTime>=3000:
+            elif pygame.time.get_ticks() - self._enableTime >= 3000:
                 self.enable = False
 
     def update(self):
@@ -105,18 +105,16 @@ class Map:
         if self._win is None:
             self._handleRound()
             self.items.update()
-            if len(Game.playerList)==0:
+            if len(Game.playerList) == 0:
                 self._win = False
         elif self._win:
             self._won()
         else:
             self._lose()
 
-
     def _getItems(self):
         dropRate = self.data.get("items")
         return Items(dropRate)
-
 
 
 class Background:
@@ -131,7 +129,7 @@ class Background:
         self.imgRect = None
         self._v = 0.1
 
-    def _setup(self, imgList:list[pygame.Surface], ops:str):
+    def _setup(self, imgList: list[pygame.Surface], ops: str):
         rl = []
         st = 0
         if ops.upper() == 'REPEAT':
@@ -144,8 +142,8 @@ class Background:
             rect.left = st
             rl.append(rect)
             self._xList.append(rect.x)
-            st += rect.right-1
-            self.maxWidth += rect.width-1
+            st += rect.right - 1
+            self.maxWidth += rect.width - 1
         self.rectList = rl
 
     def _updateRect(self):
@@ -153,30 +151,30 @@ class Background:
             self._xList[i] -= self._v
             self.rectList[i].x = self._xList[i]
             if self.rectList[i].right < 0:
-                self._xList[i] = self.maxWidth//len(self.rectList)
+                self._xList[i] = self.maxWidth // len(self.rectList)
 
     def update(self):
-        if len(self.imgList)>0:
+        if len(self.imgList) > 0:
             self._updateRect()
             for i in range(len(self.imgList)):
                 Game.blit(self.imgList[i], self.rectList[i])
         else:
-            Game.screen.fill((255,255,255))
+            Game.screen.fill((255, 255, 255))
 
 
 class Round:
-    def __init__(self,waveList:list[dict]):
+    def __init__(self, waveList: list[dict]):
         self.waveList = waveList
         self.waveCount = None
         self.curWave = None
         self._setup(waveList)
 
-    def _setup(self, waveList:list):
-        if len(waveList)>0:
+    def _setup(self, waveList: list):
+        if len(waveList) > 0:
             self.waveCount = len(waveList)
             self.curWave = 0
 
-    def _createGroupBot(self, data:dict):
+    def _createGroupBot(self, data: dict):
         try:
             botName = data.get('botName')
             quantity = data.get('quantity')
@@ -193,27 +191,52 @@ class Round:
             return gb
 
         except Exception:
-            MessageBox.show('Lỗi: ', 'Không tạo được bot', [100,10])
+            MessageBox.show('Lỗi: ', 'Không tạo được bot', [100, 10])
             return []
 
-    def getNormalBots(self, data:list):
+    def getNormalBots(self, data):
+        data = data.get('normalBot')
         bots = []
         for d in data:
             bots.extend(self._createGroupBot(d))
         return bots
 
+    def _getSpecialBot(self, data):
+        botName = data.get('botName')
+        quantity = data.get('quantity')
+        return Bots.getGroupBot(botName, quantity)
+
+    def getSpecialBots(self, data):
+        data = data.get('specialBot')
+        bots = []
+        for d in data:
+            bots.extend(self._getSpecialBot(d))
+        return bots
+
+    def _getBoss(self, data):
+        bossList = []
+        for b in data:
+            bossList.append(Bots.getBot(b))
+        return bossList
+
+    def getBoss(self, data):
+        data = data.get("boss")
+        return self._getBoss(data)
+
     def Next(self):
         bots = []
         if self.curWave is not None:
-            if self.curWave>=self.waveCount:
+            if self.curWave >= self.waveCount:
                 return None
             try:
                 data = self.waveList[self.curWave]
-                bots.extend(self.getNormalBots(data.get('normalBot')))
+                bots.extend(self.getNormalBots(data))
+                bots.extend(self.getSpecialBots(data))
+                bots.extend(self.getBoss(data))
                 self.curWave += 1
                 return bots
             except Exception:
-                MessageBox.show('Lỗi: ', 'Không lấy được curWave', [100,30])
+                MessageBox.show('Lỗi: ', 'Không lấy được curWave', [100, 30])
                 return None
         else:
             return None
@@ -228,44 +251,40 @@ class SetPointList:
     def _chainingDistance(startPoint, distance):
         dx, dy = distance
         stX, stY = startPoint
-        if stY<0:
+        if stY < 0:
             dx = 0
             dy = -dy
-        elif stX<0:
+        elif stX < 0:
             dx = -dx
             dy = 0
-        elif stX>Game.srect.width:
+        elif stX > Game.srect.width:
             dy = 0
-        elif stY>Game.srect.height:
+        elif stY > Game.srect.height:
             dx = 0
         return dx, dy
 
     @staticmethod
-    def chaining(bots:list[NormalBot], distance, pointList, startPoint):
-        if len(bots)==0:
+    def chaining(bots: list[NormalBot], distance, pointList, startPoint):
+        if len(bots) == 0:
             return
-        dx,dy = distance
+        dx, dy = distance
 
         dx += bots[0].spaceship.rect.width
         dy += bots[0].spaceship.rect.height
 
-        dx,dy = SetPointList._chainingDistance(startPoint, [dx,dy])
-        x,y = startPoint
+        dx, dy = SetPointList._chainingDistance(startPoint, [dx, dy])
+        x, y = startPoint
         for bot in bots:
             bot.setPointList(pointList)
-            bot.spaceship.gotoPos([x,y])
+            bot.spaceship.gotoPos([x, y])
             y += dy
             x += dx
 
     @staticmethod
-    def setPointList(bots, groupType:str, distance, pointList, startPoint):
+    def setPointList(bots, groupType: str, distance, pointList, startPoint):
         groupType = groupType.upper()
         if groupType == "CHAINING":
             SetPointList.chaining(bots, distance, pointList, startPoint)
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -287,6 +306,3 @@ if __name__ == '__main__':
     # G.ExtendEnemy(bots)
     # MessageBox.show('rect: ', bots[0].spaceship.rect, [300,300])
     # G.run()
-
-
-

@@ -206,10 +206,10 @@ class Game:
         if Game.playing:
             Game._updateMap()
             Game._updateItem()
-            Game._updatePlayer()
-            Game._updateEnemy()
             Game._updatePlayerBullet()
             Game._updateEnemyBullet()
+            Game._updatePlayer()
+            Game._updateEnemy()
         else:
             Game._updateFrame()
 

@@ -4,8 +4,19 @@
   {"round1": [
     {"normalBot": [{"botName": "Alien", "quantity": 1, "groupType": "chaining", "distance": [30,30], "bullet": "BotBullet1","bulletLevel": 1, "startPoint": [100, -200],
     "pointList": [[100,500], [300, 300], [500,500], [700, 300], [900, 500], [1100, 300], [1200, 400]]}],
-    "specialBot": [],
-    "boss": []}],
+    "specialBot": [
+      {
+        "botName": "DragDoll",
+        "quantity": 2
+      }],
+    "boss": []}, {"normalBot": [{"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "bullet": "BotBullet1","bulletLevel": 1, "startPoint": [100, -200],
+    "pointList": [[100,500], [300, 300], [500,500], [700, 300], [900, 500], [1100, 300], [1200, 400]]}],
+    "specialBot": [
+      {
+        "botName": "DragDoll",
+        "quantity": 4
+      }],
+    "boss": ["Boss1"]}],
   "round2": [
     {"normalBot": [],
     "specialBot": [],

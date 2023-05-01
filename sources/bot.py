@@ -13,17 +13,21 @@ class Bots:
         pass
 
     @staticmethod
-    def getBot(botName:str):
+    def getBot(botName: str):
         botName = botName.upper()
         bot = None
         if botName == 'ALIEN':
             bot = BotAlien()
-        if bot is not  None:
+        elif botName == 'DRAGDOLL':
+            bot = BotDragDoll()
+        elif botName == 'BOSS1':
+            bot = Boss1()
+        if bot is not None:
             bot.spaceship.setShowHp(True, True)
         return bot
 
     @staticmethod
-    def getGroupBot(botName, quantity:int):
+    def getGroupBot(botName, quantity: int):
         gb = []
         for _ in range(quantity):
             gb.append(Bots.getBot(botName))
@@ -36,7 +40,7 @@ class BBot:
         self.bullets = None
 
         self._moving = False
-        self._pointRect =None
+        self._pointRect = None
 
         self._pointRectX = None
         self._pointRectY = None
@@ -44,10 +48,10 @@ class BBot:
     def _loadShip(self, shipPath):
         data = HandleJson.readFile(shipPath)
         il = self._loadImgList(data.get('imgPathList'))
-        sp = Spaceship(il,[-100,-100],data.get('size'), data.get('vel'), data.get('hp'), False)
+        sp = Spaceship(il, [-100, -100], data.get('size'), data.get('vel'), data.get('hp'), False)
         return sp
 
-    def _loadImgList(self, pathList:list):
+    def _loadImgList(self, pathList: list):
         il = []
         for p in pathList:
             p = Path.getPath(p)
@@ -55,8 +59,8 @@ class BBot:
                 il.append(pygame.image.load(p).convert_alpha())
         return il
 
-    def _setPointRect(self, point:list):
-        rect = pygame.Rect(0,0,self.spaceship.vel,self.spaceship.vel)
+    def _setPointRect(self, point: list):
+        rect = pygame.Rect(0, 0, self.spaceship.vel * 2, self.spaceship.vel * 2)
         self._pointRect = rect.copy()
         self._pointRect.center = point
 
@@ -76,15 +80,17 @@ class BBot:
         else:
             self._pointRectY.centery = self.spaceship.rect.centery
 
-    def setPoint(self, point:list):
+    def setPoint(self, point: list):
         self._setPointRect(point)
         self._moving = True
 
-    def __moveX(self, sRect, twoAxis:bool=False):
+    def __moveX(self, sRect, twoAxis: bool = False):
         hadMove = True
-        if sRect.centerx < self._pointRect.centerx:
+        if not (
+                self._pointRect.left < sRect.centerx < self._pointRect.right) and sRect.centerx < self._pointRect.centerx:
             self.spaceship.rect.centerx += self.spaceship.vel
-        elif sRect.centerx > self._pointRect.centerx:
+        elif not (
+                self._pointRect.left < sRect.centerx < self._pointRect.right) and sRect.centerx > self._pointRect.centerx:
             self.spaceship.rect.centerx -= self.spaceship.vel
         else:
             hadMove = False
@@ -92,27 +98,33 @@ class BBot:
         if hadMove and not twoAxis:
             return
 
-        if sRect.centery < self._pointRect.centery:
+        if not (
+                self._pointRect.top < sRect.centery < self._pointRect.bottom) and sRect.centery < self._pointRect.centery:
             self.spaceship.rect.centery += self.spaceship.vel
-        elif sRect.centery > self._pointRect.centery:
+        elif not (
+                self._pointRect.top < sRect.centery < self._pointRect.bottom) and sRect.centery > self._pointRect.centery:
             self.spaceship.rect.centery -= self.spaceship.vel
 
-    def __moveY(self, sRect,twoAxis:bool=False):
+    def __moveY(self, sRect, twoAxis: bool = False):
         hadMove = True
-        if sRect.centery < self._pointRect.centery:
+        if not (
+                self._pointRect.top < sRect.centery < self._pointRect.bottom) and sRect.centery < self._pointRect.centery:
             self.spaceship.rect.centery += self.spaceship.vel
-        elif sRect.centery > self._pointRect.centery:
+        elif not (
+                self._pointRect.top < sRect.centery < self._pointRect.bottom) and sRect.centery > self._pointRect.centery:
             self.spaceship.rect.centery -= self.spaceship.vel
         else:
             hadMove = False
         if hadMove and not twoAxis:
             return
-        if sRect.centerx < self._pointRect.centerx:
+        if not (
+                self._pointRect.left < sRect.centerx < self._pointRect.right) and sRect.centerx < self._pointRect.centerx:
             self.spaceship.rect.centerx += self.spaceship.vel
-        elif sRect.centerx > self._pointRect.centerx:
+        elif not (
+                self._pointRect.left < sRect.centerx < self._pointRect.right) and sRect.centerx > self._pointRect.centerx:
             self.spaceship.rect.centerx -= self.spaceship.vel
 
-    def _moveToPoint(self, X:bool=True, Y: bool=False):
+    def _moveToPoint(self, X: bool = True, Y: bool = False):
         # print(self._pointRect.center)
         if self._moving:
             sRect = pygame.Rect(0, 0, self.spaceship.vel, self.spaceship.vel)
@@ -148,28 +160,28 @@ class NormalBot(BBot):
         self._pointId = 0
         self.movementType = "1-D"
 
-    def setPointList(self, pointList:list):
+    def setPointList(self, pointList: list):
         self.pointList = pointList
-        if len(self.pointList)>0:
+        if len(self.pointList) > 0:
             self._movebyPoint = True
             self._setPointRect(self.getCurPoint())
             self._moving = True
 
     def getCurPoint(self):
         if self._movebyPoint:
-            if self._pointId>=len(self.pointList):
+            if self._pointId >= len(self.pointList):
                 self._pointId = 0
             return self.pointList[self._pointId]
         return [None, None]
 
     def _move(self):
-        if self.movementType=="1-D":
+        if self.movementType == "1-D":
             self._moveToPoint()
-        elif  self.movementType=="2-D":
+        elif self.movementType == "2-D":
             self._moveToPoint(True, True)
-        elif self.movementType=="D-1":
+        elif self.movementType == "D-1":
             self._moveToPoint(False, True)
-        elif  self.movementType=="D-2":
+        elif self.movementType == "D-2":
             self._moveToPoint(False, False)
         else:
             self._moveToPoint()
@@ -190,25 +202,25 @@ class AutoBot(BBot):
         self._restRate = 0.5
         self._resting = False
         self._time = 0
-        self._changeTypeMoveTime = pygame.time.get_ticks()+random.randint(5000, 15000)
+        self._changeTypeMoveTime = pygame.time.get_ticks() + random.randint(5000, 15000)
 
-    def setRest(self, value:bool=True, rate = 0.5):
+    def setRest(self, value: bool = True, rate=0.5):
         self._rest = value
         self._restRate = rate
 
     def _getArea(self):
         area = Screen.sRect.copy()
-        area.height = Screen.sRect.height*5//8
+        area.height = Screen.sRect.height * 5 // 8
         return area
 
     def _getRandomPoint(self):
         x = random.randint(self._area.left, self._area.right)
         y = random.randint(self._area.top, self._area.bottom)
-        return [x,y]
+        return [x, y]
 
     def _createRestListChoice(self):
-        t = [True for _ in range(int(self._restRate*10))]
-        f = [False for _ in range(int((1-self._restRate)*10))]
+        t = [True for _ in range(int(self._restRate * 10))]
+        f = [False for _ in range(int((1 - self._restRate) * 10))]
         t.extend(f)
         return t
 
@@ -224,25 +236,100 @@ class AutoBot(BBot):
                 randomPoint = self._getRandomPoint()
                 self.setPoint(randomPoint)
             else:
-                if pygame.time.get_ticks()-self._time>=1000:
+                if pygame.time.get_ticks() - self._time >= 1000:
                     self._resting = False
 
     def _changeMoveType(self):
-        if pygame.time.get_ticks()-self._changeTypeMoveTime>=0:
+        if pygame.time.get_ticks() - self._changeTypeMoveTime >= 0:
             self.movementType = random.choice(['1-D', '2-D', 'D-1', 'D-2'])
-            self._changeTypeMoveTime = pygame.time.get_ticks()+random.randint(3000, 10000)
+            self._changeTypeMoveTime = pygame.time.get_ticks() + random.randint(3000, 10000)
 
     def _move(self):
-        if self.movementType=="1-D":
+        if self.movementType == "1-D":
             self._moveToPoint()
-        elif self.movementType=="2-D":
+        elif self.movementType == "2-D":
             self._moveToPoint(True, True)
-        elif self.movementType=="D-1":
+        elif self.movementType == "D-1":
             self._moveToPoint(False, True)
-        elif self.movementType=="D-2":
+        elif self.movementType == "D-2":
             self._moveToPoint(False, False)
         else:
             self._moveToPoint()
+
+
+class Boss(AutoBot):
+    def __init__(self):
+        super(Boss, self).__init__()
+        self._velList = [3,4,5,6]
+        self.setRest()
+        self.bulletsList = []
+
+    def _choiceBullets(self):
+        if len(self.bulletsList)>0:
+            newBullets =  random.choice(self.bulletsList)
+            newBullets.time = pygame.time.get_ticks()
+            return newBullets
+        return None
+
+    def _shot(self):
+        if self.bullets is None:
+            return
+        shot = random.choice([True, False])
+        if shot and self.bullets.readyShoot():
+            bl = self.bullets.getBullets(self.spaceship.rect.center)
+            Game.ExtendEnemyBullet(bl)
+            self.spaceship.shotEffect(self.bullets.recoil)
+
+    def _randomVel(self):
+        return random.choice(self._velList)
+
+    def _randomBulletLevel(self):
+        if self.bullets is not None:
+            levelMax = self.bullets.levelMax
+            return random.randint(1, levelMax)
+        return -1
+
+    def _hanDleChangeVel(self):
+        if self._resting:
+            self.spaceship.vel = self._randomVel()
+
+    def _handleChangeBulletLevel(self):
+        if self._resting:
+            self.bullets = self._choiceBullets()
+
+    def _handleChangeBullet(self):
+        if self._resting and self.bullets is not None:
+            self.bullets.setLevel(self._randomBulletLevel())
+
+    def _handleBoss(self):
+        pass
+
+
+# **********************************************************************
+
+
+class Boss1(Boss):
+    def __init__(self):
+        super(Boss1, self).__init__()
+        self.path = "..\\assets\\Bot\\boss1.json"
+        self.spaceship = self._loadShip(self.path)
+        self._velList = [i for i in range(max(self.spaceship.vel//2,2), self.spaceship.vel+5)]
+        self.bulletsList = [Att.getBullets('BotSpecialBullet1'), Att.getBullets('BotBullet1')]
+        self.bullets = self._choiceBullets()
+
+    def _handleBoss(self):
+        self._changeMoveType()
+        self._autoMove()
+        self._hanDleChangeVel()
+        self._handleChangeBulletLevel()
+        self._handleChangeBullet()
+
+    def update(self):
+        self._handleBoss()
+        self._move()
+        self._shot()
+        self.spaceship.update()
+
 
 # **********************************************************************
 
@@ -252,17 +339,18 @@ class BotDragDoll(AutoBot):
         super(BotDragDoll, self).__init__()
         self.path = "..\\assets\\Bot\\dragdoll.json"
         self.spaceship = self._loadShip(self.path)
+        self.spaceship.goto(random.randint(-200, Screen.sRect.width + 200), random.randint(-300, -20))
         self.bullets = Att.getBullets('BotBullet1')
         self.movementType = "D-2"
         self.setRest()
         self._dragdollBehav = False
-        self._timeDragdoll = 30000
+        self._timeDragdoll = random.randint(20000, 40000)
         self._dragdollTime = pygame.time.get_ticks()
 
     def _handleBehaviour(self):
-        if not self._dragdollBehav and pygame.time.get_ticks()-self._dragdollTime>=self._timeDragdoll:
+        if not self._dragdollBehav and pygame.time.get_ticks() - self._dragdollTime >= self._timeDragdoll:
             self._dragdollBehav = True
-            self.setPoint([self.spaceship.rect.centerx, Screen.sRect.height+1000])
+            self.setPoint([self.spaceship.rect.centerx, Screen.sRect.height + 1000])
             self.spaceship.vel += 5
             self.spaceship.setSize([40, 40])
             self.bullets = None
@@ -281,8 +369,6 @@ class BotDragDoll(AutoBot):
         self._move()
         self._shot()
         self.spaceship.update()
-
-
 
 
 # **********************************************************************
@@ -304,19 +390,9 @@ class BotAlien(NormalBot):
 
 
 if __name__ == '__main__':
-
-    bot = BotDragDoll()
+    bot = Boss1()
     # bot.setPointList([[200,400]])
     Game.playing = True
     Game.AddEnemy(bot)
 
     Game.run()
-
-
-
-
-
-
-
-
-
