@@ -188,7 +188,7 @@ class Round:
             pointList = data.get('pointList')
             gb = Bots.getGroupBot(botName, quantity)
 
-            SetPointList.setPointList(gb, groupType, distance, pointList, startPoint)
+            BotGroup.setPointList(gb, groupType, distance, pointList, startPoint)
 
             return gb
 
@@ -244,7 +244,7 @@ class Round:
             return None
 
 
-class SetPointList:
+class BotGroup:
 
     def __init__(self):
         pass
@@ -274,26 +274,111 @@ class SetPointList:
         dx += bots[0].spaceship.rect.width
         dy += bots[0].spaceship.rect.height
 
-        dx, dy = SetPointList._chainingDistance(startPoint, [dx, dy])
+        dx, dy = BotGroup._chainingDistance(startPoint, [dx, dy])
         x, y = startPoint
         for bot in bots:
             bot.setPointList(pointList)
             bot.spaceship.gotoPos([x, y])
             y += dy
             x += dx
+    @staticmethod
+    def __is_prime(n):
+        if n <= 1:
+            return False
+        for i in range(2, n):
+            if n % i == 0:
+                return False
+        return True
+
+    @staticmethod
+    def _find_closest_factors(target):
+        m = 0
+        while BotGroup.__is_prime(target):
+            m += 1
+            target -= 1
+        min_diff = target
+        r, c = target, 1
+        for i in range(1, target + 1):
+            if target % i == 0:
+                j = target // i
+                if abs(i - j) < min_diff:
+                    min_diff = abs(i - j)
+                    r, c = i, j
+        return r, c, m
+
+    @staticmethod
+    def _getStartR(bots, rows,cols,mod, startPoint, dx, dy, maxW, maxH):
+        stX = startPoint[0]-maxW//2
+        stY = startPoint[1]-maxH//2
+        x = stX
+        y = stY
+        i = 0
+        for r in range(rows):
+            for c in range(cols):
+               bots[i].spaceship.goto(x, y)
+               x += dx
+               i += 1
+            y += dy
+            x = stX
+        x = stX
+        for j in range(mod):
+            bots[i].spaceship.goto(x,y)
+            x += dx
+            i += 1
+
+    @staticmethod
+    def _createPointsR(x,y):
+        return [[x,y], [x, y-50], [x-50, y], [x-50, y-50], [x,y-50], [x, y]]
+
+    @staticmethod
+    def _setPointR(bots, rows,cols,mod, pointList, dx, dy, maxW, maxH):
+        print(maxH)
+        for point in pointList:
+            stX = point[0] - maxW // 2
+            stY = point[1] - maxH // 2
+            x = stX
+            y = stY
+            i = 0
+            dxx = 5
+            dyy = 5
+            for r in range(rows):
+                for c in range(cols):
+                    bots[i].appendPoint(BotGroup._createPointsR(x+dxx*i,y+dyy*i))
+                    x += dx
+                    # dxx += 5
+                    # dyy += 5
+                    i += 1
+                # dxx = 0
+                # dyy = 0
+                x = stX
+                y += dy
+        for bot in bots:
+            bot.setAutomove()
+
+
+    @staticmethod
+    def rectangle(bots:list[NormalBot], distance, pointList, startPoint):
+        l = len(bots)
+        dx = bots[0].spaceship.rect.width + distance[0]
+        dy = bots[0].spaceship.rect.height + distance[1]
+        rows,cols,mod = BotGroup._find_closest_factors(l)
+        maxW = cols * dx - distance[0]
+        maxH = rows * dy - distance[1]
+        BotGroup._getStartR(bots,rows, cols,mod,startPoint,dx,dy, maxW, maxH)
+        BotGroup._setPointR(bots,rows,cols,mod, pointList, dx,dy,maxW, maxH)
+
 
     @staticmethod
     def setPointList(bots, groupType: str, distance, pointList, startPoint):
         groupType = groupType.upper()
         if groupType == "CHAINING":
-            SetPointList.chaining(bots, distance, pointList, startPoint)
+            BotGroup.chaining(bots, distance, pointList, startPoint)
+        elif groupType == "RECTANGLE":
+            BotGroup.rectangle(bots, distance, pointList, startPoint)
 
 
 if __name__ == '__main__':
-    map = Map(r"assets\map\map1.json")
-    Game.setMap(map)
-    Game.AddPlayer(Player())
-    Game.run()
+    pass
     # map = readFile(r'D:\Workspace\python_project\pygame_pr\SWar\assets\map\map1.json')
     # rounds = map.get('rounds')
     # rList = rounds.get('round1')

@@ -65,7 +65,7 @@ class SBullet:
         self.dmg = dmg
         self.screen = pygame.display.get_surface()
         self._sret = self.screen.get_rect()
-        self.area = pygame.Rect(-50, -50, self._sret.width+50, self._sret.height+50)
+        self.area = pygame.Rect(0, 0, self._sret.width, self._sret.height)
         self.enable = True
 
         # Effect

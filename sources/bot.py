@@ -43,8 +43,8 @@ class BBot:
         self._moving = False
         self._pointRect = None
 
-        self._pointRectX = None
-        self._pointRectY = None
+        self._timeShot = pygame.time.get_ticks() + random.randint(2000,10000)
+
 
     def _loadShip(self, shipPath):
         data = HandleJson.readFile(shipPath)
@@ -65,22 +65,6 @@ class BBot:
         rect = pygame.Rect(0, 0, self.spaceship.vel * 2, self.spaceship.vel * 2)
         self._pointRect = rect.copy()
         self._pointRect.center = point
-
-        self._pointRectY = rect.copy()
-        self._pointRectY.width = Game.srect.width + 2000
-        self._pointRectX = rect.copy()
-        self._pointRectX.height = Game.srect.height + 2000
-        if point[0] is not None:
-            self._pointRectX.centerx = point[0]
-            self._pointRectX.top = -1000
-        else:
-            self._pointRectX.centerx = self.spaceship.rect.centerx
-
-        if point[1] is not None:
-            self._pointRectY.centery = point[1]
-            self._pointRectY.left = -1000
-        else:
-            self._pointRectY.centery = self.spaceship.rect.centery
 
     def setPoint(self, point: list):
         self._setPointRect(point)
@@ -147,11 +131,15 @@ class BBot:
     def _shot(self):
         if self.bullets is None:
             return
-        shot = random.choice([True, False])
-        if shot and self.bullets.readyShoot():
+        sList = [True]
+        sList.extend(False for _ in range(100))
+        shot = random.choice(sList)
+        cur = pygame.time.get_ticks()
+        if Screen.sRect.colliderect(self.spaceship.getCurRect()) and cur-self._timeShot>=0 and shot and self.bullets.readyShoot():
             bl = self.bullets.getBullets(self.spaceship.getBulletPos())
             Game.ExtendEnemyBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
+            self._timeShot = pygame.time.get_ticks()+random.randint(8000,20000)
             Sound.enemyShotSound_play()
 
 
@@ -162,12 +150,49 @@ class NormalBot(BBot):
         self.pointList = []
         self._pointId = 0
         self.movementType = "1-D"
+        self._rest = False
+        self._restTime = 1000
+        self._restTimer = 0
+
+    def _setPoint(self, point):
+        x = point[0]
+        y = point[1]
+        if not self._rest:
+            self._pointId += 1
+        elif pygame.time.get_ticks()-self._restTimer>=self._restTime:
+            self._rest = False
+        if x is None and y is None:
+            self._moving = False
+            self._rest = True
+            self._restTimer = pygame.time.get_ticks()
+        if x is None:
+            self._moving = False
+            return
+        if y is None:
+            self._moving = False
+            return
+        self._setPointRect(point)
+        self._moving = True
 
     def setPointList(self, pointList: list):
         self.pointList = pointList
         if len(self.pointList) > 0:
             self._movebyPoint = True
-            self._setPointRect(self.getCurPoint())
+            self._setPoint(self.getCurPoint())
+            # self._setPointRect()
+            self._moving = True
+
+    def addPoint(self, *points):
+        self.pointList.extend(list(points))
+
+    def appendPoint(self, pointList):
+        self.pointList.extend(pointList)
+
+    def setAutomove(self):
+        if len(self.pointList) > 0:
+            self._movebyPoint = True
+            self._setPoint(self.getCurPoint())
+            # self._setPointRect(self.getCurPoint())
             self._moving = True
 
     def getCurPoint(self):
@@ -192,8 +217,8 @@ class NormalBot(BBot):
     def _handleMove(self):
         self._move()
         if not self._moving and self._movebyPoint:
-            self._pointId += 1
-            self.setPoint(self.getCurPoint())
+            # self._pointId += 1
+            self._setPoint(self.getCurPoint())
 
 
 class AutoBot(BBot):
@@ -277,8 +302,8 @@ class Boss(AutoBot):
     def _shot(self):
         if self.bullets is None:
             return
-        shot = random.choice([True, False])
-        if shot and self.bullets.readyShoot():
+        shot = random.choice([True, False, False, False])
+        if Screen.sRect.colliderect(self.spaceship.getCurRect()) and shot and self.bullets.readyShoot():
             bl = self.bullets.getBullets(self.spaceship.rect.center)
             Game.ExtendEnemyBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
@@ -315,6 +340,7 @@ class Boss(AutoBot):
 class Boss1(Boss):
     def __init__(self):
         super(Boss1, self).__init__()
+        # self.setPoint([200,100])
         self.path = "..\\assets\\Bot\\boss1.json"
         self.spaceship = self._loadShip(self.path)
         self._velList = [i for i in range(max(self.spaceship.vel//2,2), self.spaceship.vel+5)]
@@ -384,6 +410,8 @@ class BotAlien(NormalBot):
         self.path = '..\\assets\\Bot\\alien.json'
         self.spaceship = self._loadShip(self.path)
         self.bullets = Att.getBullets("BotBullet1")
+        self.bullets.cooldownTime = random.randint(5000, 20000)
+        self.spaceship.vel = 2
         # self.movementType = "2-D"
         self.movementType = "D-2"
 

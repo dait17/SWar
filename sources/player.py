@@ -36,6 +36,7 @@ class Player:
         hpRect.right = Screen.sRect.right - 20
         sp.setShoHpCustom(hpRect)
         sp.setExplosionSound(Sound.playerExplosionSound)
+        sp.hp = 10000
         return sp
 
     def _setShip(self, shipPath: str, pos):
