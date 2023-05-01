@@ -182,17 +182,21 @@ class Round:
             quantity = data.get('quantity')
             groupType = data.get('groupType')
             distance = data.get('distance')
-            bullet = data.get('bullet')
-            bulletLevel = data.get('bulletLevel')
+            hp = data.get('hp')
+            size = data.get('size')
             startPoint = data.get('startPoint')
             pointList = data.get('pointList')
             gb = Bots.getGroupBot(botName, quantity)
+            for bot in gb:
+                bot.setHP(hp)
+                bot.setSize(size)
 
             BotGroup.setPointList(gb, groupType, distance, pointList, startPoint)
 
             return gb
 
-        except Exception:
+        except Exception as e:
+            print(e)
             MessageBox.show('Lỗi: ', 'Không tạo được bot', [100, 10])
             return []
 
@@ -216,14 +220,20 @@ class Round:
         return bots
 
     def _getBoss(self, data):
-        bossList = []
-        for b in data:
-            bossList.append(Bots.getBot(b))
-        return bossList
+        botName = data.get('botName')
+        boss = Bots.getBot(botName)
+        boss.setHP(data.get('hp'))
+        boss.setSize(data.get('size'))
+
+        return boss
+
 
     def getBoss(self, data):
         data = data.get("boss")
-        return self._getBoss(data)
+        bossList = []
+        for d in data:
+            bossList.append(self._getBoss(d))
+        return bossList
 
     def Next(self):
         bots = []

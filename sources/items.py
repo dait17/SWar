@@ -4,6 +4,7 @@ from gameTools import *
 from game import Game
 import random
 from sound import Sound
+from attackSystem import AttackSystem as Att
 
 
 class Items:
@@ -309,8 +310,11 @@ class ItemBullet(IItem):
         self._effectHeartbeat()
 
     def _collide(self, player):
-        player.setBullets(self._infor.get('bulletName'))
-        Sound.collectSound_play()
+        if type(player.bullets) is type(Att.getBullets(self._infor.get('bulletName'))):
+            player.bullets.levelUP()
+        else:
+            player.setBullets(self._infor.get('bulletName'))
+            Sound.collectSound_play()
 
 # ***************************************************************************
 

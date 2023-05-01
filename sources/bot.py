@@ -142,6 +142,13 @@ class BBot:
             self._timeShot = pygame.time.get_ticks()+random.randint(8000,20000)
             Sound.enemyShotSound_play()
 
+    def setSize(self, size):
+        self.spaceship.setSize(size)
+
+    def setHP(self, maxHp):
+        self.spaceship.maxHp = maxHp
+        self.spaceship.hp = maxHp
+
 
 class NormalBot(BBot):
     def __init__(self):
