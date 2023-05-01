@@ -9,7 +9,7 @@ class Bullets(ABC):
     def __init__(self):
         self.cooldownTime = 0 #ms
         self.recoil = 0
-        self.time = 0
+        self.time = pygame.time.get_ticks()
         self.imgPath = ''
         self.img = None
         self.level = 1

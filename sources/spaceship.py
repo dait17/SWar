@@ -27,6 +27,8 @@ class Spaceship:
         self.enable = True
         self.visible = True
 
+        self.explosionSound = None
+
         # swinging effect
         self._swingingSetting = False
         self._swingingTime = 0
@@ -67,6 +69,9 @@ class Spaceship:
     def shotEffect(self, recoil):
         self.shoting = True
         self._recoil = recoil
+
+    def setExplosionSound(self, sound):
+        self.explosionSound = sound
 
     def _sChange(self, rect, d, changeX, changeY):
         if changeX:
@@ -264,6 +269,8 @@ class Spaceship:
             self._effect()
             self._draw()
             self._moveToPoint()
+        else:
+            self.explosionSound.play()
 
 if __name__ == '__main__':
     from test import Test

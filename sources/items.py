@@ -3,6 +3,7 @@ import pygame.time
 from gameTools import *
 from game import Game
 import random
+from sound import Sound
 
 
 class Items:
@@ -185,7 +186,6 @@ class IItem:
                 break
 
     def update(self):
-        print(len(self._imgList))
         if self.enable:
             self._movement()
             self._effect()
@@ -222,6 +222,7 @@ class ItemBulletLevelUp(IItem):
 
     def _collide(self, player):
         player.bullets.levelUP()
+        Sound.collectSound_play()
 
 # ***************************************************************************
 
@@ -273,6 +274,7 @@ class ItemShip(IItem):
 
     def _collide(self, player):
         player.setShip(self._imgList, self._shipSize, self._shipVel, self._maxHp)
+        Sound.collectSound_play()
 
 # ***************************************************************************
 
@@ -308,6 +310,7 @@ class ItemBullet(IItem):
 
     def _collide(self, player):
         player.setBullets(self._infor.get('bulletName'))
+        Sound.collectSound_play()
 
 # ***************************************************************************
 
@@ -324,6 +327,7 @@ class ItemHealth(IItem):
 
     def _collide(self, player):
         player.spaceship.health(50)
+        Sound.collectSound_play()
 
 
 

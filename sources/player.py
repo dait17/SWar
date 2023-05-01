@@ -4,6 +4,7 @@ from spaceship import Spaceship
 from attackSystem import AttackSystem as Att
 from gameTools import *
 from game import Game
+from sound import Sound
 
 
 class Player:
@@ -34,6 +35,7 @@ class Player:
         hpRect.top = Screen.sRect.top + 20
         hpRect.right = Screen.sRect.right - 20
         sp.setShoHpCustom(hpRect)
+        sp.setExplosionSound(Sound.playerExplosionSound)
         return sp
 
     def _setShip(self, shipPath: str, pos):
@@ -78,6 +80,7 @@ class Player:
             bl = self.bullets.getBullets(self.spaceship.getBulletPos())
             Game.ExtendPlayerBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
+            Sound.shotSound_play()
 
     def update(self):
         self.spaceship.update()

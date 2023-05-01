@@ -1,4 +1,5 @@
 from gameTools import *
+from sound import Sound
 pygame.font.init()
 
 
@@ -78,6 +79,7 @@ class Button:
 
     def _actioion(self):
         if self.clicked and self._func is not None:
+            Sound.clickSound_play()
             self._func()
 
     def _ensuringBntInArea(self):
