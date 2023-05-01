@@ -51,7 +51,7 @@ class Map:
 
     def _loadData(self, path):
         path = Path.getPath(path)
-        return readFile(path)
+        return HandleJson.readFile(path)
 
     def _setupRound(self):
         rounds = self.data.get('rounds')

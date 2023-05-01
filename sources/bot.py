@@ -3,8 +3,7 @@ import random
 import pygame
 
 from spaceship import Spaceship
-from handbleJson import *
-from path import Path
+from gameTools import *
 from game import Game
 from attackSystem import AttackSystem as Att
 
@@ -43,9 +42,10 @@ class BBot:
         self._pointRectY = None
 
     def _loadShip(self, shipPath):
-        data = readFile(shipPath)
+        data = HandleJson.readFile(shipPath)
         il = self._loadImgList(data.get('imgPathList'))
-        return Spaceship(il,[-100,-100],data.get('size'), data.get('vel'), data.get('hp'), False)
+        sp = Spaceship(il,[-100,-100],data.get('size'), data.get('vel'), data.get('hp'), False)
+        return sp
 
     def _loadImgList(self, pathList:list):
         il = []
@@ -130,6 +130,15 @@ class BBot:
             else:
                 self._moving = False
 
+    def _shot(self):
+        if self.bullets is None:
+            return
+        shot = random.choice([True, False])
+        if shot and self.bullets.readyShoot():
+            bl = self.bullets.getBullets(self.spaceship.getBulletPos())
+            Game.ExtendEnemyBullet(bl)
+            self.spaceship.shotEffect(self.bullets.recoil)
+
 
 class NormalBot(BBot):
     def __init__(self):
@@ -172,6 +181,113 @@ class NormalBot(BBot):
             self.setPoint(self.getCurPoint())
 
 
+class AutoBot(BBot):
+    def __init__(self):
+        super(AutoBot, self).__init__()
+        self._area = self._getArea()
+        self.movementType = "1-D"
+        self._rest = False
+        self._restRate = 0.5
+        self._resting = False
+        self._time = 0
+        self._changeTypeMoveTime = pygame.time.get_ticks()+random.randint(5000, 15000)
+
+    def setRest(self, value:bool=True, rate = 0.5):
+        self._rest = value
+        self._restRate = rate
+
+    def _getArea(self):
+        area = Screen.sRect.copy()
+        area.height = Screen.sRect.height*5//8
+        return area
+
+    def _getRandomPoint(self):
+        x = random.randint(self._area.left, self._area.right)
+        y = random.randint(self._area.top, self._area.bottom)
+        return [x,y]
+
+    def _createRestListChoice(self):
+        t = [True for _ in range(int(self._restRate*10))]
+        f = [False for _ in range(int((1-self._restRate)*10))]
+        t.extend(f)
+        return t
+
+    def _getRest(self):
+        return random.choice(self._createRestListChoice())
+
+    def _autoMove(self):
+        if not self._moving:
+            if self._rest and not self._resting and not self._getRest():
+                self._resting = True
+                self._time = pygame.time.get_ticks()
+            if not self._resting:
+                randomPoint = self._getRandomPoint()
+                self.setPoint(randomPoint)
+            else:
+                if pygame.time.get_ticks()-self._time>=1000:
+                    self._resting = False
+
+    def _changeMoveType(self):
+        if pygame.time.get_ticks()-self._changeTypeMoveTime>=0:
+            self.movementType = random.choice(['1-D', '2-D', 'D-1', 'D-2'])
+            self._changeTypeMoveTime = pygame.time.get_ticks()+random.randint(3000, 10000)
+
+    def _move(self):
+        if self.movementType=="1-D":
+            self._moveToPoint()
+        elif self.movementType=="2-D":
+            self._moveToPoint(True, True)
+        elif self.movementType=="D-1":
+            self._moveToPoint(False, True)
+        elif self.movementType=="D-2":
+            self._moveToPoint(False, False)
+        else:
+            self._moveToPoint()
+
+# **********************************************************************
+
+
+class BotDragDoll(AutoBot):
+    def __init__(self):
+        super(BotDragDoll, self).__init__()
+        self.path = "..\\assets\\Bot\\dragdoll.json"
+        self.spaceship = self._loadShip(self.path)
+        self.bullets = Att.getBullets('BotBullet1')
+        self.movementType = "D-2"
+        self.setRest()
+        self._dragdollBehav = False
+        self._timeDragdoll = 30000
+        self._dragdollTime = pygame.time.get_ticks()
+
+    def _handleBehaviour(self):
+        if not self._dragdollBehav and pygame.time.get_ticks()-self._dragdollTime>=self._timeDragdoll:
+            self._dragdollBehav = True
+            self.setPoint([self.spaceship.rect.centerx, Screen.sRect.height+1000])
+            self.spaceship.vel += 5
+            self.spaceship.setSize([40, 40])
+            self.bullets = None
+
+    def _handleMove(self):
+        self._handleBehaviour()
+        if not self._dragdollBehav:
+            self._autoMove()
+        else:
+            if not Screen.sRect.colliderect(self.spaceship.rect):
+                self.spaceship.enable = False
+
+    def update(self):
+        self._changeMoveType()
+        self._handleMove()
+        self._move()
+        self._shot()
+        self.spaceship.update()
+
+
+
+
+# **********************************************************************
+
+
 class BotAlien(NormalBot):
     def __init__(self):
         super(BotAlien, self).__init__()
@@ -181,17 +297,26 @@ class BotAlien(NormalBot):
         # self.movementType = "2-D"
         self.movementType = "D-2"
 
-    def _shoot(self):
-        shot = random.choice([True, False])
-        if shot and self.bullets.readyShoot():
-            bl = self.bullets.getBullets(self.spaceship.getBulletPos())
-            Game.ExtendEnemyBullet(bl)
-            self.spaceship.shotEffect(self.bullets.recoil)
-
     def update(self):
-        self._shoot()
+        self._shot()
         self.spaceship.update()
         self._handleMove()
+
+
+if __name__ == '__main__':
+
+    bot = BotDragDoll()
+    # bot.setPointList([[200,400]])
+    Game.playing = True
+    Game.AddEnemy(bot)
+
+    Game.run()
+
+
+
+
+
+
 
 
 
