@@ -12,6 +12,7 @@ class Spaceship:
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
         self.vel = vel
+        self.tempVel = 0
         self.maxHp = maxHp
         self.hp = self.maxHp
         self.hpUpPos = True
@@ -26,6 +27,10 @@ class Spaceship:
         self._hpBoxCustom = None
         self.enable = True
         self.visible = True
+
+        self.hit = True
+        self.hitTime = 500
+        self.hitTimer = 0
 
         self.explosionSound = None
 
@@ -133,11 +138,20 @@ class Spaceship:
         rect.center = pos
         return rect
 
+    def noHit(self):
+        self.hit = False
+        self.hitTimer = pygame.time.get_ticks()
+
+    def _handleHitStatus(self):
+        if not self.hit and pygame.time.get_ticks()-self.hitTimer>=self.hitTime:
+            self.hit = True
+
     def beShot(self, dmg):
-        self.wavering = True
-        self.hp -= dmg
-        if self.hp<=0:
-            self.enable = False
+        if self.hit:
+            self.wavering = True
+            self.hp -= dmg
+            if self.hp<=0:
+                self.enable = False
 
     def health(self, value):
         self.hp += value
@@ -206,6 +220,11 @@ class Spaceship:
     def gotoPos(self, pos):
         self.rect.center = pos
 
+    def moveTo(self, dx,dy, vel=4):
+        self._point = [self.rect.centerx+dx, self.rect.centery+dy]
+        self.tempVel = vel
+        self._movePoint = True
+
     def _draw(self):
         if self.visible:
             self.screen.blit(self._getImg(self.imgId), self._curRect)
@@ -228,28 +247,28 @@ class Spaceship:
     def _moveToPoint(self):
         if self._movePoint:
             if self.rect.x<self._point[0]:
-                if self.rect.x+self.vel>=self._point[0]:
+                if self.rect.x+self.tempVel>=self._point[0]:
                     self.rect.x = self._point[0]
                 else:
-                    self.rect.x += self.vel
+                    self.rect.x += self.tempVel
 
             elif self.rect.x>self._point[0]:
-                if self.rect.x-self.vel<=self._point[0]:
+                if self.rect.x-self.tempVel<=self._point[0]:
                     self.rect.x = self._point[0]
                 else:
-                    self.rect.x -= self.vel
+                    self.rect.x -= self.tempVel
 
             elif self.rect.y < self._point[1]:
-                if self.rect.y + self.vel >= self._point[1]:
+                if self.rect.y + self.tempVel >= self._point[1]:
                     self.rect.y = self._point[1]
                 else:
-                    self.rect.y += self.vel
+                    self.rect.y += self.tempVel
 
             elif self.rect.y > self._point[1]:
-                if self.rect.y - self.vel <= self._point[1]:
+                if self.rect.y - self.tempVel <= self._point[1]:
                     self.rect.y = self._point[1]
                 else:
-                    self.rect.y -= self.vel
+                    self.rect.y -= self.tempVel
             else:
                 self._movePoint = False
 
@@ -269,6 +288,7 @@ class Spaceship:
             self._effect()
             self._draw()
             self._moveToPoint()
+            self._handleHitStatus()
         else:
             self.explosionSound.play()
 

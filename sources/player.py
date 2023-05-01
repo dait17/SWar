@@ -11,8 +11,6 @@ class Player:
     def __init__(self):
         self.spaceship = self._shipInit('..\\assets\\Ship\\ship1.json')
         self.bullets = Att.getBullets("superblue")
-        self.bullets.setLevel(7)
-        self.spaceship.beShot(30)
 
     def _loadInfo(self, shipPath):
         return HandleJson.readFile(shipPath)
@@ -29,14 +27,14 @@ class Player:
     def _shipInit(self, path):
         pos = [Game.srect.width//2, Game.srect.height+100]
         sp = self._setShip(path, pos.copy())
-        sp.setMovePoint([pos[0], pos[1]-250])
+        # sp.setMovePoint([pos[0], pos[1]-250])
+        sp.moveTo(0, -250, 6)
 
         hpRect = pygame.Rect(0,0,80, 20)
         hpRect.top = Screen.sRect.top + 20
         hpRect.right = Screen.sRect.right - 20
         sp.setShoHpCustom(hpRect)
         sp.setExplosionSound(Sound.playerExplosionSound)
-        sp.hp = 10000
         return sp
 
     def _setShip(self, shipPath: str, pos):

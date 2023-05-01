@@ -168,6 +168,14 @@ class Game:
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
+            for e in Game.enemyList:
+                if p.spaceship.getCurRect().colliderect(e.spaceship.getCurRect()):
+                    p.spaceship.beShot(100)
+                    p.spaceship.moveTo(0, 20, 20)
+                    p.spaceship.noHit()
+                    e.spaceship.beShot(100)
+                    # e.spaceship.moveTo(0, -20, 20)
+                    e.spaceship.noHit()
             Game._removeShipDisable(Game.playerList, p)
 
 
@@ -181,6 +189,7 @@ class Game:
             if Game._removeShipDisable(Game.enemyList, e):
                 Game.EventBotDefeat = True
                 Game.EventBotDefeatPos = pos
+
 
     @staticmethod
     def _updatePlayerBullet():
