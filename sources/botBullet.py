@@ -20,7 +20,6 @@ class BotBullet1(Bullets):
     def getBullets(self, pos):
         bl = []
         degree = self._start_degree()
-        print(degree)
         for i in range(self.level):
             bullet = Bullet( self.img, pos, degree, self.size, self.vel, self.durability, self.dmd)
             bl.append(bullet)

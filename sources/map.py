@@ -139,7 +139,6 @@ class Background:
                 newImg = imgList[0].copy()
                 newImg = pygame.transform.flip(newImg, True, False)
                 imgList.append(newImg)
-            print(len(self.imgList))
         for img in imgList:
             rect = img.get_rect(y=0)
             rect.left = st
@@ -210,7 +209,6 @@ class Round:
                 return None
             try:
                 data = self.waveList[self.curWave]
-                # print(data)
                 bots.extend(self.getNormalBots(data.get('normalBot')))
                 self.curWave += 1
                 return bots
