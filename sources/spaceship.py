@@ -209,7 +209,7 @@ class Spaceship:
             pygame.draw.rect(self.screen, (255,255,255), hpBpx, 1,4)
             pygame.draw.rect(self.screen, (255,0,0), self._getHpRect(hpBpx))
         elif self._showHpBoxCustom:
-            MessageBox.show('Hp: ', '', [self._hpBoxCustom.left-30,self._hpBoxCustom.top], size=18)
+            MessageBox.show('Hp: ', '', [self._hpBoxCustom.left-35,self._hpBoxCustom.top-5], size=18)
             pygame.draw.rect(self.screen, (255, 255, 255), self._hpBoxCustom, 1, 6)
             pygame.draw.rect(self.screen, (255, 0, 0), self._getHpRect(self._hpBoxCustom), border_radius=6)
 
