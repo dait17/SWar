@@ -1,10 +1,7 @@
-import pygame
-import tkinter as tk
-from tkinter import filedialog
-from path import Path
-import random
+
 from bot import *
 from game import Game
+from gameTools import *
 from messageBox import MessageBox
 from player import Player
 from items import Items
@@ -24,7 +21,9 @@ class Map:
         self._win = None
         self._wTime = 0
         self._enableTime = 0
-        self._trans = False
+        self._trans = True
+        self._transTimer = pygame.time.get_ticks()
+        self._transTime = 1000
         self.enable = True
 
     def _loadImg(self, path):
@@ -73,13 +72,16 @@ class Map:
             self._win = True
 
     def _handleRound(self):
-        if len(Game.enemyList) == 0:
+        if len(Game.enemyList) == 0 and not self._trans:
             nbots = self.curRound.Next()
             if nbots is None:
                 self._trans = True
                 self._nextRound()
             else:
                 Game.ExtendEnemy(nbots)
+        else:
+            if pygame.time.get_ticks()-self._transTimer>=self._transTime:
+                self._trans = False
 
     def _won(self):
         if self._wTime == 0:
@@ -129,7 +131,7 @@ class Background:
 
         self._setup(self.imgList, ops)
         self.imgRect = None
-        self._v = 0.1
+        self._v = 1
 
     def _setup(self, imgList: list[pygame.Surface], ops: str):
         rl = []
@@ -153,7 +155,7 @@ class Background:
             self._xList[i] -= self._v
             self.rectList[i].x = self._xList[i]
             if self.rectList[i].right < 0:
-                self._xList[i] = self.maxWidth // len(self.rectList)
+                self._xList[i] = self.maxWidth // len(self.rectList)-1
 
     def update(self):
         if len(self.imgList) > 0:
