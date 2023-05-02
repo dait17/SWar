@@ -131,7 +131,7 @@ class Background:
 
         self._setup(self.imgList, ops)
         self.imgRect = None
-        self._v = 1
+        self._v = 0.1
 
     def _setup(self, imgList: list[pygame.Surface], ops: str):
         rl = []
@@ -387,21 +387,3 @@ class BotGroup:
             BotGroup.chaining(bots, distance, pointList, startPoint)
         elif groupType == "RECTANGLE":
             BotGroup.rectangle(bots, distance, pointList, startPoint)
-
-
-if __name__ == '__main__':
-    pass
-    # map = readFile(r'D:\Workspace\python_project\pygame_pr\SWar\assets\map\map1.json')
-    # rounds = map.get('rounds')
-    # rList = rounds.get('round1')
-    # R = Round(rList)
-    # player = Player()
-    #
-    # G = Game()
-    # G.AddPlayer(player)
-    #
-    # G.setBackground('..\\assets\\img_background\\bg2.jpg')
-    # bots = R.Next()
-    # G.ExtendEnemy(bots)
-    # MessageBox.show('rect: ', bots[0].spaceship.rect, [300,300])
-    # G.run()

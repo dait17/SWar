@@ -1,4 +1,4 @@
-{"name":  "Map1", "background": {"imgPathList": ["\\assets\\img_background\\bg2.jpg"], "ops": "repeat"},
+{"name":  "Map1", "background": {"imgPathList": ["\\assets\\img_background\\bg3.jpg"], "ops": "repeat"},
   "items": {"levelUp": 0.3, "changeBullet": 0.8, "changeShip": 0.3, "health": 0.4},
   "rounds":
   {"round1": [
