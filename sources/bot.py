@@ -6,7 +6,7 @@ from spaceship import Spaceship
 from gameTools import *
 from game import Game
 from attackSystem import AttackSystem as Att
-from sound import Sound
+#from sound import Sound
 
 
 class Bots:
@@ -50,7 +50,7 @@ class BBot:
         data = HandleJson.readFile(shipPath)
         il = self._loadImgList(data.get('imgPathList'))
         sp = Spaceship(il, [-100, -100], data.get('size'), data.get('vel'), data.get('hp'), False)
-        sp.setExplosionSound(Sound.botExplosionSound)
+        #sp.setExplosionSound(Sound.botExplosionSound)
         return sp
 
     def _loadImgList(self, pathList: list):
@@ -140,7 +140,7 @@ class BBot:
             Game.ExtendEnemyBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
             self._timeShot = pygame.time.get_ticks()+random.randint(8000,20000)
-            Sound.enemyShotSound_play()
+            #Sound.enemyShotSound_play()
 
     def setSize(self, size):
         self.spaceship.setSize(size)
@@ -314,7 +314,7 @@ class Boss(AutoBot):
             bl = self.bullets.getBullets(self.spaceship.rect.center)
             Game.ExtendEnemyBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
-            Sound.enemyShotSound_play()
+            #Sound.enemyShotSound_play()
 
     def _randomVel(self):
         return random.choice(self._velList)
