@@ -5,7 +5,7 @@ from gameTools import *
 from messageBox import MessageBox
 from player import Player
 from items import Items
-from sound import Sound
+#from sound import Sound
 
 
 class Map:
@@ -85,7 +85,7 @@ class Map:
 
     def _won(self):
         if self._wTime == 0:
-            Sound.wonSound_play()
+           # Sound.wonSound_play()
             self._wTime = pygame.time.get_ticks()
         elif pygame.time.get_ticks() - self._wTime >= 1000:
             MessageBox.show('You win!', '', Game.srect.center, (0, 255, 0), 36)

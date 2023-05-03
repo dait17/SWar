@@ -1,1 +1,1 @@
-{"name": "Alien", "movementType": "2-D", "imgPathList": ["assets\\img_enemy\\alien3.png"], "size": [200,200], "vel": 3, "hp": 1000}
+{"name": "Alien", "movementType": "2-D", "imgPathList": ["assets\\img_enemy\\img_boss\\b1.png"], "size": [200,200], "vel": 3, "hp": 1000}

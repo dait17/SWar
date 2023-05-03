@@ -290,7 +290,8 @@ class Spaceship:
             self._moveToPoint()
             self._handleHitStatus()
         else:
-            self.explosionSound.play()
+            if self.explosionSound is not None:
+                self.explosionSound.play()
 
 if __name__ == '__main__':
     from test import Test

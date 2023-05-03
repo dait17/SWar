@@ -2,24 +2,43 @@
   "items": {"levelUp": 0.3, "changeBullet": 0.8, "changeShip": 0.3, "health": 0.4},
   "rounds":
   {"round1": [
-    {"normalBot": [{"botName": "Alien", "quantity": 8, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [500, -200],
-    "pointList": [[900,500], [200, 300], [100,500], [1100, 300], [400, 500], [1100, 300], [1200, 400]]},
-                {"botName": "Alien", "quantity": 6, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [100, -200],
-                "pointList": [[100,500], [300, 300], [500,500], [700, 300], [900, 500], [1100, 300], [1200, 400]]}],
+    {"normalBot": [{"botName": "Alien", "quantity": 1, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [1220, 0],
+    "pointList": [[650,375]]}, {"botName": "Alien", "quantity": 1, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [-20, 0],
+    "pointList": [[600,375]]}, {"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [600, -20],
+    "pointList": [[600,150], [350, 375], [600,500], [850, 375]]}, {"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [600, -20],
+    "pointList": [[600,150], [850, 375], [600,500], [350, 375]]}, {"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [1220, 375],
+    "pointList": [[900,100], [1000, 100], [1000,110], [900, 110]]}, {"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [-20, 375],
+    "pointList": [[400,100], [300, 100], [300,110], [400, 110]]}],
     "specialBot": [
       {
         "botName": "DragDoll",
         "quantity": 2
       }],
-    "boss": []}, {"normalBot": [{"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [100, -200],
-    "pointList": [[100,500], [300, 300], [500,500], [700, 300], [900, 500], [1100, 300], [1200, 400]]}],
+    "boss": [
+      {
+        "botName":"Boss1", "hp": 5000, "size": [300,200]
+      }
+    ]}, {"normalBot": [{"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [1220, 0],
+    "pointList": [[100,550], [1100, 50]]}, {"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [-20, 0],
+    "pointList": [[1100,550], [100, 50]]}],
     "specialBot": [
       {
         "botName": "DragDoll",
         "quantity": 4
       }],
     "boss": [
+      ]}, {"normalBot": [],
+    "specialBot": [
       {
+        "botName": "DragDoll",
+        "quantity": 6
+      }],
+    "boss": [
+      {
+        "botName":"Boss1", "hp": 5000, "size": [200,200]
+      }, {
+        "botName":"Boss1", "hp": 5000, "size": [200,200]
+      }, {
         "botName":"Boss1", "hp": 5000, "size": [200,200]
       }]}],
   "round2": [
