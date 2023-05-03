@@ -1,5 +1,6 @@
 from gameTools import *
-#from sound import Sound
+from sound import Sound
+
 pygame.font.init()
 
 
@@ -17,18 +18,22 @@ class Frame:
     def setEnable(self):
         self.enable = True
 
-    def addBnt(self, bnt):
-        self._bntList.append(bnt)
+    def addBnt(self, *bnts):
+        for bnt in list(bnts):
+            self._bntList.append(bnt)
 
     def _drawBg(self):
         if type(self._bg) is pygame.Surface:
             self.screen.blit(self._bg, self.rect)
         else:
-            self.screen.fill((255,255,255))
+            self.screen.fill((255, 255, 255))
 
     def _updateBnt(self):
         for bnt in self._bntList:
             bnt.update()
+
+    def getBntList(self):
+        return self._bntList
 
     def update(self):
         if self.enable:
@@ -50,6 +55,7 @@ class Frame:
 class Button:
     def __init__(self, area: pygame.Rect, pos: list, size: list, content: str = ''):
         self._area = area
+        self.bg = None
         self.screen = pygame.display.get_surface()
         self._boderRect = None
         self._paddingRect = None
@@ -79,7 +85,7 @@ class Button:
 
     def _actioion(self):
         if self.clicked and self._func is not None:
-            #Sound.clickSound_play()
+            Sound.clickSound_play()
             self._func()
 
     def _ensuringBntInArea(self):
@@ -106,6 +112,9 @@ class Button:
         self._paddingRect = self._boderRect.copy()
         self._paddingRect.size = [width, height]
         self._paddingRect.center = self._boderRect.center
+
+    def setBackground(self, img):
+        self.bg = img
 
     def connect(self, func):
         self._func = func
@@ -174,10 +183,18 @@ class Button:
             self._content.setFontSize(self._fontSize)
 
     def _draw(self):
-        pygame.draw.rect(self.screen, self._colorBorder, self._getBorderRect(), self._borderWidth, self._radius)
-        pygame.draw.rect(self.screen, self._colorPadding, self._getPaddingRect(), border_radius=self._radius)
+        # draw border
+        Screen.drawRect(self._getBorderRect(), self._colorBorder, self._borderWidth, self._radius)
+        # draw background
+        if type(self.bg) is pygame.Surface:
+            Screen.blit(Image.smothscale(self.bg, self._getPaddingRect().size), self._getPaddingRect())
+        else:
+            Screen.drawRect(self._getPaddingRect(), self._colorPadding, borderRadius=self._radius)
 
     def _updateContent(self):
+        """
+        Cập nhật lại nội dung của nút sau khi thay đổi thông số của font (fontName, fontSize, color)
+        """
         self._getContent()
         self._content.update()
 
@@ -187,6 +204,14 @@ class Button:
         self._boderRect.centerx += dx
         self._boderRect.centery += dy
         self._setupPadding()
+
+    def goto(self, x, y):
+        self._boderRect.topleft = [x, y]
+        self._ensuringBntInArea()
+        self._setupPadding()
+
+    def setPos(self, pos):
+        self._setPos(pos, 0, 0)
 
     def posCenter(self, dx: int = 0, dy: int = 0):
         self._setPos(self._area.center, dx, dy)
@@ -302,5 +327,3 @@ class ButtonContent:
 
     def update(self):
         self._draw()
-
-
