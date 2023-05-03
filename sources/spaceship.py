@@ -1,5 +1,6 @@
 import pygame
 from game import Game as G
+from messageBox import MessageBox
 
 
 class Spaceship:
@@ -11,6 +12,7 @@ class Spaceship:
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
         self.vel = vel
+        self.tempVel = 0
         self.maxHp = maxHp
         self.hp = self.maxHp
         self.hpUpPos = True
@@ -21,8 +23,16 @@ class Spaceship:
         self._movePoint = False
 
         self.showHpBox = False
+        self._showHpBoxCustom = False
+        self._hpBoxCustom = None
         self.enable = True
         self.visible = True
+
+        self.hit = True
+        self.hitTime = 500
+        self.hitTimer = 0
+
+        self.explosionSound = None
 
         # swinging effect
         self._swingingSetting = False
@@ -46,7 +56,6 @@ class Spaceship:
         self._VW = self._AW
         self._XW = 0
 
-
     def changeShip(self, imgList, size, vel, maxHp):
         self.imgList = self._fixImg(imgList)
         self.imgId = 0
@@ -65,6 +74,9 @@ class Spaceship:
     def shotEffect(self, recoil):
         self.shoting = True
         self._recoil = recoil
+
+    def setExplosionSound(self, sound):
+        self.explosionSound = sound
 
     def _sChange(self, rect, d, changeX, changeY):
         if changeX:
@@ -121,17 +133,25 @@ class Spaceship:
 
         self._curRect = newRect
 
-
     def _initRect(self, pos, size):
         rect = pygame.Rect(0,0,size[0], size[1])
         rect.center = pos
         return rect
 
+    def noHit(self):
+        self.hit = False
+        self.hitTimer = pygame.time.get_ticks()
+
+    def _handleHitStatus(self):
+        if not self.hit and pygame.time.get_ticks()-self.hitTimer>=self.hitTime:
+            self.hit = True
+
     def beShot(self, dmg):
-        self.wavering = True
-        self.hp -= dmg
-        if self.hp<=0:
-            self.enable = False
+        if self.hit:
+            self.wavering = True
+            self.hp -= dmg
+            if self.hp<=0:
+                self.enable = False
 
     def health(self, value):
         self.hp += value
@@ -147,6 +167,9 @@ class Spaceship:
             il.append(pygame.Surface(self.rect.size))
         return il
 
+    def getCurRect(self):
+        return self._curRect
+
     def _getHpBox(self):
         box = pygame.Rect(0,0,self.rect.height, 4)
         if self.hpUpPos:
@@ -159,7 +182,9 @@ class Spaceship:
 
     def _getHpRect(self, hpBox:pygame.Rect):
         rect = hpBox.copy()
+        rect.height -= 2
         rect.width = (self.hp/self.maxHp)*hpBox.width
+        rect.centery = hpBox.centery
         return rect
 
     def _getImg(self, id):
@@ -174,11 +199,19 @@ class Spaceship:
         self.showHpBox = value
         self.hpUpPos = upPos
 
+    def setShoHpCustom(self,rect):
+        self._showHpBoxCustom = True
+        self._hpBoxCustom = rect
+
     def _showHp(self):
         if self.showHpBox:
             hpBpx = self._getHpBox()
             pygame.draw.rect(self.screen, (255,255,255), hpBpx, 1,4)
             pygame.draw.rect(self.screen, (255,0,0), self._getHpRect(hpBpx))
+        elif self._showHpBoxCustom:
+            MessageBox.show('Hp: ', '', [self._hpBoxCustom.left-35,self._hpBoxCustom.top-5], size=18)
+            pygame.draw.rect(self.screen, (255, 255, 255), self._hpBoxCustom, 1, 6)
+            pygame.draw.rect(self.screen, (255, 0, 0), self._getHpRect(self._hpBoxCustom), border_radius=6)
 
     def goto(self, x, y):
         self.rect.x = x
@@ -186,6 +219,11 @@ class Spaceship:
 
     def gotoPos(self, pos):
         self.rect.center = pos
+
+    def moveTo(self, dx,dy, vel=4):
+        self._point = [self.rect.centerx+dx, self.rect.centery+dy]
+        self.tempVel = vel
+        self._movePoint = True
 
     def _draw(self):
         if self.visible:
@@ -209,28 +247,28 @@ class Spaceship:
     def _moveToPoint(self):
         if self._movePoint:
             if self.rect.x<self._point[0]:
-                if self.rect.x+self.vel>=self._point[0]:
+                if self.rect.x+self.tempVel>=self._point[0]:
                     self.rect.x = self._point[0]
                 else:
-                    self.rect.x += self.vel
+                    self.rect.x += self.tempVel
 
             elif self.rect.x>self._point[0]:
-                if self.rect.x-self.vel<=self._point[0]:
+                if self.rect.x-self.tempVel<=self._point[0]:
                     self.rect.x = self._point[0]
                 else:
-                    self.rect.x -= self.vel
+                    self.rect.x -= self.tempVel
 
             elif self.rect.y < self._point[1]:
-                if self.rect.y + self.vel >= self._point[1]:
+                if self.rect.y + self.tempVel >= self._point[1]:
                     self.rect.y = self._point[1]
                 else:
-                    self.rect.y += self.vel
+                    self.rect.y += self.tempVel
 
             elif self.rect.y > self._point[1]:
-                if self.rect.y - self.vel <= self._point[1]:
+                if self.rect.y - self.tempVel <= self._point[1]:
                     self.rect.y = self._point[1]
                 else:
-                    self.rect.y -= self.vel
+                    self.rect.y -= self.tempVel
             else:
                 self._movePoint = False
 
@@ -250,8 +288,9 @@ class Spaceship:
             self._effect()
             self._draw()
             self._moveToPoint()
-
-
+            self._handleHitStatus()
+        else:
+            self.explosionSound.play()
 
 if __name__ == '__main__':
     from test import Test

@@ -1,4 +1,5 @@
-from bulletFireBall import FireBall
+from bulletFireBall import FireBall, SuperBlue
+from botBullet import BotBullet1, BotSpecialBullet1
 
 
 class AttackSystem:
@@ -7,8 +8,15 @@ class AttackSystem:
 
     @staticmethod
     def getBullets(name:str):
-        if name.upper()=='FIREBALL':
+        name = name.upper()
+        if name=='FIREBALL':
             return FireBall()
+        elif name=="SUPERBLUE":
+            return SuperBlue()
+        elif name=="BOTBULLET1":
+            return BotBullet1()
+        elif name=="BOTSPECIALBULLET1":
+            return BotSpecialBullet1()
 
 
 

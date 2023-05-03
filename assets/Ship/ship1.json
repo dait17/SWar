@@ -1,1 +1,1 @@
-{"name": "Rocker", "imgPathList": ["assets\\img_spaceship\\sp1.png","assets\\img_spaceship\\sp2.png"],"size": [70,70], "hp": 100, "vel":  23}
+{"name": "Rocker", "imgPathList": ["assets\\img_spaceship\\sp1.png"],"size": [60,60], "hp": 200, "vel":  15}

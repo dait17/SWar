@@ -1,10 +1,27 @@
-{"name":  "Map1", "background": {"imgPathList": ["\\assets\\img_background\\bg2.jpg"], "ops": "repeat"}, "items": {"levelUp": 0.5, "changeBullet": 0.3, "changeShip": 0.3, "health": 0.4},
+{"name":  "Map1", "background": {"imgPathList": ["\\assets\\img_background\\bg3.jpg"], "ops": "repeat"},
+  "items": {"levelUp": 0.3, "changeBullet": 0.8, "changeShip": 0.3, "health": 0.4},
   "rounds":
   {"round1": [
-    {"normalBot": [{"botName": "Alien", "quantity": 20, "groupType": "chaining", "distance": [30,30], "bullet": "","bulletLevel": 1, "startPoint": [100, -200],
+    {"normalBot": [{"botName": "Alien", "quantity": 8, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [500, -200],
+    "pointList": [[900,500], [200, 300], [100,500], [1100, 300], [400, 500], [1100, 300], [1200, 400]]},
+                {"botName": "Alien", "quantity": 6, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [100, -200],
+                "pointList": [[100,500], [300, 300], [500,500], [700, 300], [900, 500], [1100, 300], [1200, 400]]}],
+    "specialBot": [
+      {
+        "botName": "DragDoll",
+        "quantity": 2
+      }],
+    "boss": []}, {"normalBot": [{"botName": "Alien", "quantity": 4, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [100, -200],
     "pointList": [[100,500], [300, 300], [500,500], [700, 300], [900, 500], [1100, 300], [1200, 400]]}],
-    "specialBot": [],
-    "boss": []}],
+    "specialBot": [
+      {
+        "botName": "DragDoll",
+        "quantity": 4
+      }],
+    "boss": [
+      {
+        "botName":"Boss1", "hp": 5000, "size": [200,200]
+      }]}],
   "round2": [
     {"normalBot": [],
     "specialBot": [],

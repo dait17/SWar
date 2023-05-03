@@ -1,11 +1,13 @@
 from widget import Frame, Button
 from gameTools import *
 from map import Map
+from sound import Sound
 from game import Game
 
 
 class MainFrame:
     def __init__(self):
+        Sound.mainSound_play()
         self._frame = self._getFrame()
         self._setupBnt()
 
@@ -14,8 +16,8 @@ class MainFrame:
         return fr
 
     def _getBntPlay(self):
-        bnt = Button(self._frame.rect, [0, 0], [250, 50], "Play")
-        bnt.posCenter(0, -100)
+        bnt = Button(self._frame.rect, [0, 0], [250, 70], "Play")
+        bnt.posCenter(0, -70)
         bnt.connect(lambda: Game.setFrame(MapFrame()))
         return bnt
 
@@ -34,14 +36,14 @@ class MainFrame:
         pass
 
     def _getBntExit(self):
-        bnt = Button(self._frame.rect, [0, 0], [250, 50], "Exit")
-        bnt.posCenter(0, 100)
+        bnt = Button(self._frame.rect, [0, 0], [250, 70], "Exit")
+        bnt.posCenter(0, 70)
         bnt.connect(MainFrame._bntExitFunc)
         return bnt
 
     def _setupBnt(self):
         self._frame.addBnt(self._getBntPlay())
-        self._frame.addBnt(self._getBntSoundSetting())
+        # self._frame.addBnt(self._getBntSoundSetting())
         self._frame.addBnt(self._getBntExit())
 
     def Enable(sefl):
@@ -77,20 +79,25 @@ class MapFrame:
         return path[:path.index('.json')]
 
     def _bntMap(self, mapName:str, dx,dy=0):
-        bnt = Button(self._frame.rect, [0,0], [100,100], mapName)
+        bnt = Button(self._frame.rect, [0,0], [150,150], mapName)
         bnt.posCenter(dx,dy)
         return bnt
 
     def _setupBntMap(self):
         mp = 'assets\\map'
         maps = Path.getFiles(mp)
-        map1Bnt = self._bntMap(self._getMapName(maps[0]),-100)
-        map1Bnt.connect(lambda : Game.setMap(Map(Path.getPath(mp+'\\'+maps[0]))))
+        map1Bnt = self._bntMap(self._getMapName(maps[0]),-200)
+        map1Bnt.connect(lambda :( Game.setMap(Map(Path.getPath(mp+'\\'+maps[0]))),
+                                  Sound.playingSound_play()))
         self._frame.addBnt(map1Bnt)
 
-        map2Bnt = self._bntMap(self._getMapName(maps[1]), 100)
+        map2Bnt = self._bntMap(self._getMapName(maps[1]), 0)
         map2Bnt.connect(lambda: Game.setMap(Map(Path.getPath(mp + '\\' + maps[1]))))
         self._frame.addBnt(map2Bnt)
+
+        map3Bnt = self._bntMap(self._getMapName(maps[2]), 200)
+        map3Bnt.connect(lambda: Game.setMap(Map(Path.getPath(mp + '\\' + maps[2]))))
+        self._frame.addBnt(map3Bnt)
 
 
     def update(self):
