@@ -76,29 +76,60 @@ class MapFrame:
         self._setupBntMap()
 
     def _getMapName(self, path: str):
-        return path[:path.index('.json')]
+        st = 0
+        if '\\' in path:
+            st = path.rindex('\\') + 1
+        return path[st:path.index('.json')]
 
-    def _bntMap(self, mapName:str, dx,dy=0):
-        bnt = Button(self._frame.rect, [0,0], [150,150], mapName)
-        bnt.posCenter(dx,dy)
+    def _bntMap(self, mapName: str, dx, dy=0):
+        bnt = Button(self._frame.rect, [0, 0], [150, 150], mapName)
+        bnt.posCenter(dx, dy)
         return bnt
 
+    def _getMapBG(self, mapPath):
+        try:
+            path = HandleJson.readFile(mapPath).get("background").get("imgPathList")[0]
+            return Image.load(path)
+        except Exception:
+            return None
+
+    def _createBntMap(self, mapPath, size):
+        bnt = Button(self._frame.rect, [0, 0], size, self._getMapName(mapPath))
+        bg = self._getMapBG(mapPath)
+        bnt.setBackground(bg)
+        bnt.connect(lambda: (
+            Game.setMap(Map(Path.getPath(mapPath))),
+            Sound.playingSound_play()
+        ))
+        return bnt
+
+    def _setPosBnt(self, bntList, size, distance):
+        l = len(bntList)
+        w, h = size
+        dx, dy = distance
+        maxBntW = int((Screen.sRect.width - dx) / (w + dx))
+        maxW = min((w + dx) * l - dx, maxBntW * (w + dx) - dx)
+        maxH = (round(l / maxBntW)) * (h + dy) - dy
+        stX = (Screen.sRect.width - maxW) // 2
+        stY = (Screen.sRect.height - maxH) // 2
+        x, y = stX, stY
+        for bnt in bntList:
+            bnt.goto(*[x, y])
+            x += w + dx
+            if x > maxW:
+                x = stX
+                y += h + dy
+
     def _setupBntMap(self):
-        mp = 'assets\\map'
+        mp = 'assets\\map\\'
         maps = Path.getFiles(mp)
-        map1Bnt = self._bntMap(self._getMapName(maps[0]),-200)
-        map1Bnt.connect(lambda :( Game.setMap(Map(Path.getPath(mp+'\\'+maps[0]))),
-                                  Sound.playingSound_play()))
-        self._frame.addBnt(map1Bnt)
-
-        map2Bnt = self._bntMap(self._getMapName(maps[1]), 0)
-        map2Bnt.connect(lambda: Game.setMap(Map(Path.getPath(mp + '\\' + maps[1]))))
-        self._frame.addBnt(map2Bnt)
-
-        map3Bnt = self._bntMap(self._getMapName(maps[2]), 200)
-        map3Bnt.connect(lambda: Game.setMap(Map(Path.getPath(mp + '\\' + maps[2]))))
-        self._frame.addBnt(map3Bnt)
-
+        size = [300, 200]
+        bntList = []
+        for map in maps:
+            bntList.append(self._createBntMap(mp + map, size))
+            # self._frame.addBnt(self._createBntMap(mp+map,size))
+        self._setPosBnt(bntList, size, [150, 100])
+        self._frame.addBnt(*bntList)
 
     def update(self):
         # MapFrame._setupBntMap()
