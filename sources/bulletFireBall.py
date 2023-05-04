@@ -10,7 +10,7 @@ class FireBall(Bullets):
         self.cooldownTime = 300
         self.recoil = 15
         self.levelMax = 9
-        self.imgPath = '..\\assets\\img_bullet\\fireball1.png'
+        self.imgPath = '..\\assets\\img_bullet\\bl_red.png'
         self.img = self._getImg(self.imgPath)
         self.d_degree = 6
         self.size = [30,30]
