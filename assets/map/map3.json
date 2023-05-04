@@ -67,7 +67,11 @@
     ],
     "boss": []}],
   "round4": [
-    {"normalBot": [],
+    {"normalBot": [{"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [0, -20],
+    "pointList": [[200, 250]]}, {"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [1200, -20],
+    "pointList": [[1000, 250]]}, {"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [0, -20],
+    "pointList": [[200, 250], [200, 300]]}, {"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [1200, -20],
+    "pointList": [[1000, 250], [100,300]]}],
     "specialBot": [
       {
         "botName": "DragDoll",

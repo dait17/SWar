@@ -10,6 +10,11 @@ from items import Items
 
 class Map:
     def __init__(self, mapPath):
+        # p = Player()
+        # p.bullets.setLevel(99999)
+        # p.spaceship.maxHp = 99999
+        # p.spaceship.hp = 99999
+        # Game.setPlayer([p])
         Game.setPlayer([Player()])
         self.data = self._loadData(mapPath)
         self.background = self.getBackground()
