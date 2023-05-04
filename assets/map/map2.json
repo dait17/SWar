@@ -23,7 +23,9 @@
         "quantity": 4
       }],
     "boss": [
-      ]}, {"normalBot": [{"botName": "Alien", "quantity": 8, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [-20, 50],
+      ]}],
+  "round2": [
+    {"normalBot": [{"botName": "Alien", "quantity": 8, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [-20, 50],
     "pointList": [[100, 50], [1100, 50]]}, {"botName": "Alien", "quantity": 8, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [1220, 100],
     "pointList": [[1100, 100], [100, 100]]}, {"botName": "Alien", "quantity": 8, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [-20, 150],
     "pointList": [[100, 150], [1100, 150]]}],
@@ -43,7 +45,9 @@
         "quantity": 15
       }],
     "boss": [
-      ]}, {"normalBot": [{"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [600, -20],
+      ]}],
+  "round3": [
+    {"normalBot": [{"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [600, -20],
     "pointList": [[100, 50],[600, 200], [1100, 50], [600, 200], [600, 50], [600, 200], [100, 50], [600,200]]}, {"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [-20, 300],
     "pointList": [[1100, 300], [100, 300]]}, {"botName": "Alien", "quantity": 4, "groupType": "rectangle", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [1220, 300],
     "pointList": [[100, 300], [1100, 300]]}],
@@ -58,7 +62,9 @@
       }, {
         "botName":"Boss1", "hp": 5000, "size": [150,150]
       }
-      ]}, {"normalBot": [],
+      ]}],
+  "round4": [
+    {"normalBot": [],
     "specialBot": [],
     "boss": [{
         "botName":"Boss1", "hp": 5000, "size": [150,150]
@@ -71,19 +77,7 @@
       }, {
         "botName":"Boss1", "hp": 5000, "size": [150,150]
       }
-      ]}],
-  "round2": [
-    {"normalBot": [],
-    "specialBot": [],
-    "boss": []}],
-  "round3": [
-    {"normalBot": [],
-    "specialBot": [],
-    "boss": []}],
-  "round4": [
-    {"normalBot": [],
-    "specialBot": [],
-    "boss": []}]
+      ]}]
   }
 
 }
