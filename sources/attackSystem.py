@@ -1,4 +1,4 @@
-from bulletFireBall import FireBall, SuperBlue
+from playerBullet import FireBall, SuperBlue
 from botBullet import BotBullet1, BotSpecialBullet1
 
 
