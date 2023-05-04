@@ -38,34 +38,55 @@ class Sound:
 
     @staticmethod
     def mainSound_play():
-        Sound.mainSound.play(-1, fade_ms=300)
-        Sound.playingSound.stop()
+        try:
+            Sound.mainSound.play(-1, fade_ms=300)
+            Sound.playingSound.stop()
+        except Exception:
+            pass
 
     @staticmethod
     def playingSound_play():
-        Sound.playingSound.play(-1, fade_ms=300)
-        Sound.mainSound.stop()
+        try:
+            Sound.playingSound.play(-1, fade_ms=300)
+            Sound.mainSound.stop()
+        except Exception:
+            pass
 
     @staticmethod
     def clickSound_play():
-        Sound.clickSound.play()
+        try:
+            Sound.clickSound.play()
+        except Exception:
+            pass
 
     @staticmethod
     def shotSound_play():
-        Sound.shotSound.play()
+        try:
+            Sound.shotSound.play()
+        except Exception:
+            pass
 
     @staticmethod
     def enemyShotSound_play():
-        Sound.enemyShotSound.play()
+        try:
+            Sound.enemyShotSound.play()
+        except Exception:
+            pass
 
     @staticmethod
     def collectSound_play():
-        Sound.collectSound.play()
+        try:
+            Sound.collectSound.play()
+        except Exception:
+            pass
 
     @staticmethod
     def wonSound_play():
-        Sound.wonSound.play()
-        Sound.playingSound.stop()
+        try:
+            Sound.wonSound.play()
+            Sound.playingSound.stop()
+        except Exception:
+            pass
 
 
 Sound.setVolume()

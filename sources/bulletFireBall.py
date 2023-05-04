@@ -1,7 +1,4 @@
-import pygame
-
 from bullets import *
-from test import Test
 
 
 class FireBall(Bullets):
@@ -11,7 +8,7 @@ class FireBall(Bullets):
         self.recoil = 15
         self.levelMax = 9
         self.imgPath = '..\\assets\\img_bullet\\bl_red.png'
-        self.img = self._getImg(self.imgPath)
+        self.img = Image.load(self.imgPath)
         self.d_degree = 6
         self.size = [30, 30]
         self.vel = 20
@@ -42,7 +39,7 @@ class SuperBlue(Bullets):
         self.recoil = 10
         self.levelMax = 7
         self.imgPath = '..\\assets\\img_bullet\\bl1.png'
-        self.img = self._getImg(self.imgPath)
+        self.img = Image.load(self.imgPath)
         self.d_degree = 6
         self.size = [15, 25]
         self.vel = 20

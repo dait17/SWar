@@ -10,7 +10,7 @@ class BotBullet1(Bullets):
         self.recoil = 30
         self.levelMax = 3
         self.imgPath = '..\\assets\\img_bullet\\slime.png'
-        self.img = self._getImg(self.imgPath)
+        self.img = Image.load(self.imgPath)
         self.d_degree = 30
         self.size = [30, 30]
         self.vel = 2
@@ -44,7 +44,7 @@ class BotSpecialBullet1(Bullets):
         self.recoil = 30
         self.levelMax = 6
         self.imgPath = '..\\assets\\img_bullet\\shuriken.png'
-        self.img = self._getImg(self.imgPath)
+        self.img = Image.load(self.imgPath)
         self.d_degree = 32
         self.size = [30, 30]
         self.vel = 4

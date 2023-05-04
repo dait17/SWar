@@ -1,8 +1,6 @@
-import pygame, os
 import math
 from abc import ABC, abstractmethod
-from path import Path as P
-from messageBox import MessageBox
+from gameTools import *
 
 
 class Bullets(ABC):
@@ -25,12 +23,6 @@ class Bullets(ABC):
         elif level <= 0:
             return 1
         return self.levelMax
-
-    def _getImg(self, imgPath):
-        imgPath = P.getPath(imgPath)
-        if os.path.exists(imgPath):
-            return pygame.image.load(imgPath).convert_alpha()
-        return None
 
     def levelUP(self):
         self.level = self._controlLevel(self.level + 1)

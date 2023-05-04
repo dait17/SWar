@@ -165,14 +165,14 @@ class Game:
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
-            for e in Game.enemyList:
-                if p.spaceship.getCurRect().colliderect(e.spaceship.getCurRect()):
-                    p.spaceship.beShot(100)
-                    p.spaceship.moveTo(0, 20, 20)
-                    p.spaceship.noHit()
-                    e.spaceship.beShot(100)
-                    # e.spaceship.moveTo(0, -20, 20)
-                    e.spaceship.noHit()
+            if p.spaceship.exists:
+                for e in Game.enemyList:
+                    if e.spaceship.exists and p.spaceship.getCurRect().colliderect(e.spaceship.getCurRect()):
+                        p.spaceship.beShot(100)
+                        p.spaceship.moveTo(0, 20, 20)
+                        p.spaceship.noHit()
+                        e.spaceship.beShot(100)
+                        e.spaceship.noHit()
             Game._removeShipDisable(Game.playerList, p)
 
     @staticmethod
@@ -191,7 +191,7 @@ class Game:
         for b in Game.bullPlayerList:
             b.update()
             for e in Game.enemyList:
-                if b.collide(e.spaceship.rect):
+                if e.spaceship.exists and b.collide(e.spaceship.rect):
                     e.spaceship.beShot(b.dmg)
             Game._removeDisable(Game.bullPlayerList, b)
 
@@ -200,7 +200,7 @@ class Game:
         for b in Game.bullEnemyList:
             b.update()
             for p in Game.playerList:
-                if b.collide(p.spaceship.getCurRect()):
+                if p.spaceship.exists and b.collide(p.spaceship.getCurRect()):
                     p.spaceship.beShot(b.dmg)
             Game._removeDisable(Game.bullEnemyList, b)
 

@@ -1,4 +1,3 @@
-import pygame
 from game import Game as G
 from messageBox import MessageBox
 from gameTools import *
@@ -333,14 +332,7 @@ class Explosion:
 
 
 if __name__ == '__main__':
-    from test import Test
-    T = Test()
-    S = Spaceship([], [400,600], [50,50],12,100,True)
-    S.setShowHp(True, True)
-
-    T.add(S)
-
-    T.run()
+    pass
 
 
 

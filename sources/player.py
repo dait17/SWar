@@ -6,7 +6,7 @@ from gameTools import *
 from game import Game
 
 
-# from sound import Sound
+from sound import Sound
 
 
 class Player:
@@ -75,15 +75,15 @@ class Player:
         self.spaceship.rect.y += self.spaceship.vel * v.y
         self.spaceship.ensuringInScreen()
 
-    def _shoot(self):
+    def _shot(self):
         keyPress = pygame.key.get_pressed()
         if keyPress[pygame.K_SPACE] and self.bullets.readyShoot():
             bl = self.bullets.getBullets(self.spaceship.getBulletPos())
             Game.ExtendPlayerBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
-            # Sound.shotSound_play()
+            Sound.shotSound_play()
 
     def update(self):
         self.spaceship.update()
         self._movement()
-        self._shoot()
+        self._shot()
