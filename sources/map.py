@@ -67,8 +67,8 @@ class Map:
 
     def _nextRound(self):
         self.roundId += 1
-        cur = self.getCurRound(self.roundId)
-        if cur is None:
+        self.curRound = self.getCurRound(self.roundId)
+        if self.curRound is None:
             self._win = True
 
     def _handleRound(self):
