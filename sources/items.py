@@ -3,24 +3,24 @@ import pygame.time
 from gameTools import *
 from game import Game
 import random
-#from sound import Sound
+# from sound import Sound
 from attackSystem import AttackSystem as Att
 
 
 class Items:
-    def __init__(self, dropRate:dict):
+    def __init__(self, dropRate: dict):
         self._dropRate = dropRate
-        self._timer = pygame.time.get_ticks()+self._getRandomTime(2000,15000)
+        self._timer = pygame.time.get_ticks() + self._getRandomTime(2000, 15000)
         self._itemsList = self._createItemList()
 
-    def _getRandomTime(self, start,end):
+    def _getRandomTime(self, start, end):
         return random.randint(start, end)
 
     def _nextTime(self):
-        self._timer += self._getRandomTime(5000,10000)
+        self._timer += self._getRandomTime(5000, 10000)
 
     def _createBLU(self, dropRate, pos):
-        dr = int(dropRate*10)
+        dr = int(dropRate * 10)
         il = []
         for i in range(dr):
             il.append(ItemBulletLevelUp(pos))
@@ -34,8 +34,8 @@ class Items:
         return il
 
     def _getRandomPos(self):
-        x = random.randint(20, Screen.sRect.width-20)
-        return x,-60
+        x = random.randint(20, Screen.sRect.width - 20)
+        return x, -60
 
     def _createItemList(self):
         l = []
@@ -44,14 +44,13 @@ class Items:
         l.extend(self._createItem(ItemChangeBullets, self._dropRate.get('changeBullet')))
         l.extend(self._createItem(ItemHealth, self._dropRate.get('health')))
 
-
         return l
 
     def _getItem(self):
         return random.choice(self._itemsList)
 
     def _handleAutoDropItem(self):
-        if pygame.time.get_ticks()-self._timer>=0:
+        if pygame.time.get_ticks() - self._timer >= 0:
             Game.AddItem(self._getItem())
             self._nextTime()
             self._itemsList = self._createItemList()
@@ -75,11 +74,11 @@ class Items:
 
 
 class IItem:
-    def __init__(self, pos:list):
+    def __init__(self, pos: list):
         self._vel = 1
 
         self._imgList = []
-        self._size = [50,50]
+        self._size = [50, 50]
         self._rect = None
         self.curRect = None
         self._setupRect(pos)
@@ -104,7 +103,7 @@ class IItem:
         self._eHbDMax = 20
 
     def _setupRect(self, pos):
-        self._rect = pygame.Rect(0,0, self._size[0], self._size[1])
+        self._rect = pygame.Rect(0, 0, self._size[0], self._size[1])
         self._rect.center = pos
         self.curRect = self._rect.copy()
 
@@ -128,21 +127,21 @@ class IItem:
 
     def _movement(self):
         self._rect.y += self._vel
-        if self._rect.top>Screen.sRect.bottom:
+        if self._rect.top > Screen.sRect.bottom:
             self.enable = False
 
     def _draw(self):
-        Screen.blit(self._curImg,self.curRect.center)
+        Screen.blit(self._curImg, self.curRect.center)
 
     def _effectChangeImg(self):
         self._imgId += self._eCIV
-        if self._imgId>=len(self._imgList):
+        if self._imgId >= len(self._imgList):
             self._imgId = 0
         self._curImg = self._getImgById()
 
     def _effectRotateImg(self):
         self._curD += self._eRIV
-        if self._curD>=360:
+        if self._curD >= 360:
             self._curD = 0
         try:
             self._curImg = pygame.transform.rotate(self._getImgById(), self._curD)
@@ -152,10 +151,10 @@ class IItem:
     def _effectHeartbeat(self):
         self._eHbV += self._eHbA
         self._eHbX += self._eHbV
-        if 0<=self._eHbX<=self._eHbDMax/2:
+        if 0 <= self._eHbX <= self._eHbDMax / 2:
             self.curRect.width = self._rect.width + self._eHbX
             self.curRect.height = self._rect.height + self._eHbX
-        elif self._eHbDMax/2<self._eHbX<self._eHbDMax:
+        elif self._eHbDMax / 2 < self._eHbX < self._eHbDMax:
             self.curRect.width = self._rect.width + (self._eHbDMax - self._eHbX)
             self.curRect.height = self._rect.height + (self._eHbDMax - self._eHbX)
         else:
@@ -195,11 +194,12 @@ class IItem:
             self._handleCollide()
             self._draw()
 
+
 # ***************************************************************************
 
 
 class ItemBulletLevelUp(IItem):
-    def __init__(self, pos:list):
+    def __init__(self, pos: list):
         super(ItemBulletLevelUp, self).__init__(pos)
         self._setupImg()
 
@@ -212,7 +212,7 @@ class ItemBulletLevelUp(IItem):
         filesP = Path.getFiles(mp)
         imgList = []
         for p in filesP:
-            img = Image.load(mp+p)
+            img = Image.load(mp + p)
             if img is not None:
                 imgList.append(img)
         return imgList
@@ -223,7 +223,8 @@ class ItemBulletLevelUp(IItem):
 
     def _collide(self, player):
         player.bullets.levelUP()
-        #Sound.collectSound_play()
+        # Sound.collectSound_play()
+
 
 # ***************************************************************************
 
@@ -239,10 +240,11 @@ class ItemChangeShip:
         mp = '..\\assets\\Ship\\'
         pathList = Path.getFiles(mp)
         path = random.choice(pathList)
-        return mp+path
+        return mp + path
 
     def update(self):
         self._item.update()
+
 
 # ***************************************************************************
 
@@ -275,15 +277,18 @@ class ItemShip(IItem):
 
     def _collide(self, player):
         player.setShip(self._imgList, self._shipSize, self._shipVel, self._maxHp)
-        #Sound.collectSound_play()
+        # Sound.collectSound_play()
+
 
 # ***************************************************************************
 
 
 class ItemChangeBullets:
     def __init__(self, pos):
-        self._itemList = [{'imgList':Image.loadImgList(['assets\\items\\giftboxs\\giftboxFireBall.png']), 'bulletName': 'FireBall'},
-                          {'imgList':Image.loadImgList(['assets\\items\\giftboxs\\giftboxSuperBlue.png']), 'bulletName': 'SuperBlue'}]
+        self._itemList = [
+            {'imgList': Image.loadImgList(['assets\\items\\giftboxs\\giftboxFireBall.png']), 'bulletName': 'FireBall'},
+            {'imgList': Image.loadImgList(['assets\\items\\giftboxs\\giftboxSuperBlue.png']),
+             'bulletName': 'SuperBlue'}]
 
         self._item = self._getItem(pos)
 
@@ -301,7 +306,7 @@ class ItemChangeBullets:
 
 # infor {imglist, bulletName}
 class ItemBullet(IItem):
-    def __init__(self, pos:list, infor:dict):
+    def __init__(self, pos: list, infor: dict):
         super(ItemBullet, self).__init__(pos)
         self._infor = infor
         self.setImgList(self._infor.get('imgList'))
@@ -314,7 +319,8 @@ class ItemBullet(IItem):
             player.bullets.levelUP()
         else:
             player.setBullets(self._infor.get('bulletName'))
-            #Sound.collectSound_play()
+            # Sound.collectSound_play()
+
 
 # ***************************************************************************
 
@@ -331,37 +337,13 @@ class ItemHealth(IItem):
 
     def _collide(self, player):
         player.spaceship.health(50)
-        #Sound.collectSound_play()
-
-
-
-
-
+        # Sound.collectSound_play()
 
 
 if __name__ == '__main__':
     # i = ItemBulletLevelUp([200,0])
     # i = ItemShip([200,0], "..\\assets\\Ship\\ship1.json")
-    i = ItemChangeShip([200,0])
+    i = ItemChangeShip([200, 0])
     # i.setImgList(Image.loadImgList(HandleJson.readFile('..\\assets\\Ship\\ship1.json').get('imgPathList')))
     Game.setFrame(i)
     Game.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

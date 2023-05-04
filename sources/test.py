@@ -44,15 +44,13 @@ class Test:
             ob.update()
             self.removeDisable(ob)
 
-
     def run(self):
         while True:
-            self.screen.fill((255,255,255))
+            self.screen.fill((255, 255, 255))
             for event in pygame.event.get():
-                if event.type== pygame.QUIT:
+                if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
             self.update()
             pygame.display.flip()
             self.clock.tick(self.fps)
-

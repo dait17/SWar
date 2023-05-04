@@ -6,7 +6,9 @@ from spaceship import Spaceship
 from gameTools import *
 from game import Game
 from attackSystem import AttackSystem as Att
-#from sound import Sound
+
+
+# from sound import Sound
 
 
 class Bots:
@@ -43,14 +45,13 @@ class BBot:
         self._moving = False
         self._pointRect = None
 
-        self._timeShot = pygame.time.get_ticks() + random.randint(2000,10000)
-
+        self._timeShot = pygame.time.get_ticks() + random.randint(2000, 10000)
 
     def _loadShip(self, shipPath):
         data = HandleJson.readFile(shipPath)
         il = self._loadImgList(data.get('imgPathList'))
         sp = Spaceship(il, [-100, -100], data.get('size'), data.get('vel'), data.get('hp'), False)
-        #sp.setExplosionSound(Sound.botExplosionSound)
+        # sp.setExplosionSound(Sound.botExplosionSound)
         return sp
 
     def _loadImgList(self, pathList: list):
@@ -135,12 +136,13 @@ class BBot:
         sList.extend(False for _ in range(100))
         shot = random.choice(sList)
         cur = pygame.time.get_ticks()
-        if Screen.sRect.colliderect(self.spaceship.getCurRect()) and cur-self._timeShot>=0 and shot and self.bullets.readyShoot():
+        if Screen.sRect.colliderect(
+                self.spaceship.getCurRect()) and cur - self._timeShot >= 0 and shot and self.bullets.readyShoot():
             bl = self.bullets.getBullets(self.spaceship.getBulletPos())
             Game.ExtendEnemyBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
-            self._timeShot = pygame.time.get_ticks()+random.randint(8000,20000)
-            #Sound.enemyShotSound_play()
+            self._timeShot = pygame.time.get_ticks() + random.randint(8000, 20000)
+            # Sound.enemyShotSound_play()
 
     def setSize(self, size):
         self.spaceship.setSize(size)
@@ -166,7 +168,7 @@ class NormalBot(BBot):
         y = point[1]
         if not self._rest:
             self._pointId += 1
-        elif pygame.time.get_ticks()-self._restTimer>=self._restTime:
+        elif pygame.time.get_ticks() - self._restTimer >= self._restTime:
             self._rest = False
         if x is None and y is None:
             self._moving = False
@@ -295,13 +297,13 @@ class AutoBot(BBot):
 class Boss(AutoBot):
     def __init__(self):
         super(Boss, self).__init__()
-        self._velList = [3,4,5,6]
+        self._velList = [3, 4, 5, 6]
         self.setRest()
         self.bulletsList = []
 
     def _choiceBullets(self):
-        if len(self.bulletsList)>0:
-            newBullets =  random.choice(self.bulletsList)
+        if len(self.bulletsList) > 0:
+            newBullets = random.choice(self.bulletsList)
             newBullets.time = pygame.time.get_ticks()
             return newBullets
         return None
@@ -314,7 +316,7 @@ class Boss(AutoBot):
             bl = self.bullets.getBullets(self.spaceship.rect.center)
             Game.ExtendEnemyBullet(bl)
             self.spaceship.shotEffect(self.bullets.recoil)
-            #Sound.enemyShotSound_play()
+            # Sound.enemyShotSound_play()
 
     def _randomVel(self):
         return random.choice(self._velList)
@@ -350,7 +352,7 @@ class Boss1(Boss):
         # self.setPoint([200,100])
         self.path = "..\\assets\\Bot\\boss1.json"
         self.spaceship = self._loadShip(self.path)
-        self._velList = [i for i in range(max(self.spaceship.vel//2,2), self.spaceship.vel+5)]
+        self._velList = [i for i in range(max(self.spaceship.vel // 2, 2), self.spaceship.vel + 5)]
         self.bulletsList = [Att.getBullets('BotSpecialBullet1'), Att.getBullets('BotBullet1')]
         self.bullets = self._choiceBullets()
 

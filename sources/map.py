@@ -1,11 +1,12 @@
-
 from bot import *
 from game import Game
 from gameTools import *
 from messageBox import MessageBox
 from player import Player
 from items import Items
-#from sound import Sound
+
+
+# from sound import Sound
 
 
 class Map:
@@ -80,12 +81,12 @@ class Map:
             else:
                 Game.ExtendEnemy(nbots)
         else:
-            if pygame.time.get_ticks()-self._transTimer>=self._transTime:
+            if pygame.time.get_ticks() - self._transTimer >= self._transTime:
                 self._trans = False
 
     def _won(self):
         if self._wTime == 0:
-           # Sound.wonSound_play()
+            # Sound.wonSound_play()
             self._wTime = pygame.time.get_ticks()
         elif pygame.time.get_ticks() - self._wTime >= 1000:
             MessageBox.show('You win!', '', Game.srect.center, (0, 255, 0), 36)
@@ -155,7 +156,7 @@ class Background:
             self._xList[i] -= self._v
             self.rectList[i].x = self._xList[i]
             if self.rectList[i].right < 0:
-                self._xList[i] = self.maxWidth // len(self.rectList)-1
+                self._xList[i] = self.maxWidth // len(self.rectList) - 1
 
     def update(self):
         if len(self.imgList) > 0:
@@ -229,7 +230,6 @@ class Round:
 
         return boss
 
-
     def getBoss(self, data):
         data = data.get("boss")
         bossList = []
@@ -293,6 +293,7 @@ class BotGroup:
             bot.spaceship.gotoPos([x, y])
             y += dy
             x += dx
+
     @staticmethod
     def __is_prime(n):
         if n <= 1:
@@ -319,32 +320,31 @@ class BotGroup:
         return r, c, m
 
     @staticmethod
-    def _getStartR(bots, rows,cols,mod, startPoint, dx, dy, maxW, maxH):
-        stX = startPoint[0]-maxW//2
-        stY = startPoint[1]-maxH//2
+    def _getStartR(bots, rows, cols, mod, startPoint, dx, dy, maxW, maxH):
+        stX = startPoint[0] - maxW // 2
+        stY = startPoint[1] - maxH // 2
         x = stX
         y = stY
         i = 0
         for r in range(rows):
             for c in range(cols):
-               bots[i].spaceship.goto(x, y)
-               x += dx
-               i += 1
+                bots[i].spaceship.goto(x, y)
+                x += dx
+                i += 1
             y += dy
             x = stX
         x = stX
         for j in range(mod):
-            bots[i].spaceship.goto(x,y)
+            bots[i].spaceship.goto(x, y)
             x += dx
             i += 1
 
     @staticmethod
-    def _createPointsR(x,y):
-        return [[x,y], [x, y-50], [x-50, y], [x-50, y-50], [x,y-50], [x, y]]
+    def _createPointsR(x, y):
+        return [[x, y], [x, y - 50], [x - 50, y], [x - 50, y - 50], [x, y - 50], [x, y]]
 
     @staticmethod
-    def _setPointR(bots, rows,cols,mod, pointList, dx, dy, maxW, maxH):
-        print(maxH)
+    def _setPointR(bots, rows, cols, mod, pointList, dx, dy, maxW, maxH):
         for point in pointList:
             stX = point[0] - maxW // 2
             stY = point[1] - maxH // 2
@@ -355,30 +355,28 @@ class BotGroup:
             dyy = 5
             for r in range(rows):
                 for c in range(cols):
-                    bots[i].appendPoint(BotGroup._createPointsR(x+dxx*i,y+dyy*i))
+                    bots[i].appendPoint(BotGroup._createPointsR(x + dxx * i, y + dyy * i))
                     x += dx
-                    # dxx += 5
-                    # dyy += 5
                     i += 1
-                # dxx = 0
-                # dyy = 0
                 x = stX
                 y += dy
+            for _ in range(mod):
+                bots[i].appendPoint(BotGroup._createPointsR(*point))
+                i += 1
+
         for bot in bots:
             bot.setAutomove()
 
-
     @staticmethod
-    def rectangle(bots:list[NormalBot], distance, pointList, startPoint):
+    def rectangle(bots: list[NormalBot], distance, pointList, startPoint):
         l = len(bots)
         dx = bots[0].spaceship.rect.width + distance[0]
         dy = bots[0].spaceship.rect.height + distance[1]
-        rows,cols,mod = BotGroup._find_closest_factors(l)
+        rows, cols, mod = BotGroup._find_closest_factors(l)
         maxW = cols * dx - distance[0]
         maxH = rows * dy - distance[1]
-        BotGroup._getStartR(bots,rows, cols,mod,startPoint,dx,dy, maxW, maxH)
-        BotGroup._setPointR(bots,rows,cols,mod, pointList, dx,dy,maxW, maxH)
-
+        BotGroup._getStartR(bots, rows, cols, mod, startPoint, dx, dy, maxW, maxH)
+        BotGroup._setPointR(bots, rows, cols, mod, pointList, dx, dy, maxW, maxH)
 
     @staticmethod
     def setPointList(bots, groupType: str, distance, pointList, startPoint):
