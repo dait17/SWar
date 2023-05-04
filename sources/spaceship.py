@@ -295,29 +295,27 @@ class Spaceship:
             self._moveToPoint()
             self._handleHitStatus()
         else:
-            self._explosion = Explosion(self.rect.center)
+            if self._explosion is None:
+                self._explosion = Explosion(self.rect)
+            else:
+                self._explosion.update()
             self.enable = self._explosion.enable
             if self.explosionSound is not None:
                 self.explosionSound.play()
 
 
 class Explosion:
-    def __init__(self, pos):
-        self._imgPathList = []
+    def __init__(self, rect):
+        self._imgPathList = ['..\\assets\\img_effect\\ex_1.png', '..\\assets\\img_effect\\ex_2.png','..\\assets\\img_effect\\ex_3.png']
         self.imgList = Image.loadImgList(self._imgPathList)
-        self.rect = self._getRect(pos)
+        self.rect = rect.copy()
 
         self._v = 0.1
         self._id = 0
         self.enable = True
 
-    def _getRect(self, pos):
-        rect = pygame.Rect(0,0,50,50)
-        rect.center = pos
-        return rect
-
     def _getCurImg(self):
-        return self.imgList[self._id]
+        return self.imgList[int(self._id)]
 
     def _handleId(self):
         if self._id<len(self.imgList)-1:
