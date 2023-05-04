@@ -1,6 +1,7 @@
 import pygame
 from game import Game as G
 from messageBox import MessageBox
+from gameTools import *
 
 
 class Spaceship:
@@ -55,6 +56,10 @@ class Spaceship:
         self._AW = 0.5
         self._VW = self._AW
         self._XW = 0
+
+        #
+        self.exists = True
+        self._explosion = None
 
     def changeShip(self, imgList, size, vel, maxHp):
         self.imgList = self._fixImg(imgList)
@@ -151,7 +156,7 @@ class Spaceship:
             self.wavering = True
             self.hp -= dmg
             if self.hp<=0:
-                self.enable = False
+                self.exists = False
 
     def health(self, value):
         self.hp += value
@@ -284,14 +289,50 @@ class Spaceship:
                 self.rect.bottom = G.srect.bottom
 
     def update(self):
-        if self.enable:
+        if self.exists:
             self._effect()
             self._draw()
             self._moveToPoint()
             self._handleHitStatus()
         else:
+            self._explosion = Explosion(self.rect.center)
+            self.enable = self._explosion.enable
             if self.explosionSound is not None:
                 self.explosionSound.play()
+
+
+class Explosion:
+    def __init__(self, pos):
+        self._imgPathList = []
+        self.imgList = Image.loadImgList(self._imgPathList)
+        self.rect = self._getRect(pos)
+
+        self._v = 0.1
+        self._id = 0
+        self.enable = True
+
+    def _getRect(self, pos):
+        rect = pygame.Rect(0,0,50,50)
+        rect.center = pos
+        return rect
+
+    def _getCurImg(self):
+        return self.imgList[self._id]
+
+    def _handleId(self):
+        if self._id<len(self.imgList)-1:
+            self._id += self._v
+        else:
+            self.enable = False
+
+    def _draw(self):
+        Screen.blit(Image.smothscale(self._getCurImg(), self.rect.size), self.rect)
+
+    def update(self):
+        if self.enable:
+            self._handleId()
+            self._draw()
+
 
 if __name__ == '__main__':
     from test import Test
