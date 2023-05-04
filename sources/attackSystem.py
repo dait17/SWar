@@ -7,16 +7,13 @@ class AttackSystem:
         pass
 
     @staticmethod
-    def getBullets(name:str):
+    def getBullets(name: str):
         name = name.upper()
-        if name=='FIREBALL':
+        if name == 'FIREBALL':
             return FireBall()
-        elif name=="SUPERBLUE":
+        elif name == "SUPERBLUE":
             return SuperBlue()
-        elif name=="BOTBULLET1":
+        elif name == "BOTBULLET1":
             return BotBullet1()
-        elif name=="BOTSPECIALBULLET1":
+        elif name == "BOTSPECIALBULLET1":
             return BotSpecialBullet1()
-
-
-

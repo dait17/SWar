@@ -14,13 +14,10 @@ def readFile(path):
 def write(path, content):
     path = P.getPath(path)
     with open(path, 'w') as file:
-        json.dump(content,file)
+        json.dump(content, file)
 
 
-def append(path, content:dict):
+def append(path, content: dict):
     old = readFile(path)
     old.update(content)
-    write(path,old)
-
-
-
+    write(path, old)

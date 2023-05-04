@@ -38,7 +38,7 @@ class Sound:
 
     @staticmethod
     def mainSound_play():
-        Sound.mainSound.play(-1,fade_ms=300)
+        Sound.mainSound.play(-1, fade_ms=300)
         Sound.playingSound.stop()
 
     @staticmethod
@@ -73,8 +73,3 @@ Sound.setVolume()
 if __name__ == '__main__':
     # Sound.playingSound_play()
     Game.run()
-
-
-
-
-

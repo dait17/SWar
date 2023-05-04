@@ -1,13 +1,13 @@
 from widget import Frame, Button
 from gameTools import *
 from map import Map
-#from sound import Sound
+# from sound import Sound
 from game import Game
 
 
 class MainFrame:
     def __init__(self):
-        #Sound.mainSound_play()
+        # Sound.mainSound_play()
         self._frame = self._getFrame()
         self._setupBnt()
 
@@ -99,7 +99,7 @@ class MapFrame:
         bnt.setBackground(bg)
         bnt.connect(lambda: (
             Game.setMap(Map(Path.getPath(mapPath))),
-            #Sound.playingSound_play()
+            # Sound.playingSound_play()
         ))
         return bnt
 
