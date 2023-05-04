@@ -4,7 +4,6 @@ import pygame
 from gameTools import *
 
 
-
 class Game:
     frame = None
     map = None
@@ -44,28 +43,26 @@ class Game:
     def setFrame(frame):
         Game.frame = frame
 
-
     @staticmethod
     def setMap(map):
         Game.setup()
         Game.playing = True
         Game.map = map
 
-
     @staticmethod
     def drawBackground():
         if type(Game.bg) is pygame.Surface:
-            Game.screen.blit(Game.bg, (0,0))
+            Game.screen.blit(Game.bg, (0, 0))
         else:
-            Game.screen.fill((255,255,255))
+            Game.screen.fill((255, 255, 255))
 
     @staticmethod
     def showSurface(sur, pos):
         if type(sur) is pygame.Surface:
-            Game.screen.blit(sur,pos)
+            Game.screen.blit(sur, pos)
 
     @staticmethod
-    def drawRect(rect, color=(0,255,0), width=0, border_radius = -1):
+    def drawRect(rect, color=(0, 255, 0), width=0, border_radius=-1):
         pygame.draw.rect(Game.screen, color, rect, width, border_radius)
 
     @staticmethod
@@ -96,7 +93,7 @@ class Game:
         return True
 
     @staticmethod
-    def _removeShipDisable(orLs:list, ship):
+    def _removeShipDisable(orLs: list, ship):
         try:
             if not ship.spaceship.enable:
                 Game._removeOB(orLs, ship)
@@ -143,7 +140,7 @@ class Game:
         Game._extend(Game.bullEnemyList, bullets)
 
     @staticmethod
-    def blit(sur,rect):
+    def blit(sur, rect):
         Game.screen.blit(sur, rect)
 
     @staticmethod
@@ -168,16 +165,15 @@ class Game:
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
-            for e in Game.enemyList:
-                if p.spaceship.getCurRect().colliderect(e.spaceship.getCurRect()):
-                    p.spaceship.beShot(100)
-                    p.spaceship.moveTo(0, 20, 20)
-                    p.spaceship.noHit()
-                    e.spaceship.beShot(100)
-                    # e.spaceship.moveTo(0, -20, 20)
-                    e.spaceship.noHit()
+            if p.spaceship.exists:
+                for e in Game.enemyList:
+                    if e.spaceship.exists and p.spaceship.getCurRect().colliderect(e.spaceship.getCurRect()):
+                        p.spaceship.beShot(100)
+                        p.spaceship.moveTo(0, 20, 20)
+                        p.spaceship.noHit()
+                        e.spaceship.beShot(100)
+                        e.spaceship.noHit()
             Game._removeShipDisable(Game.playerList, p)
-
 
     @staticmethod
     def _updateEnemy():
@@ -190,23 +186,21 @@ class Game:
                 Game.EventBotDefeat = True
                 Game.EventBotDefeatPos = pos
 
-
     @staticmethod
     def _updatePlayerBullet():
         for b in Game.bullPlayerList:
             b.update()
             for e in Game.enemyList:
-                if b.collide(e.spaceship.rect):
+                if e.spaceship.exists and b.collide(e.spaceship.rect):
                     e.spaceship.beShot(b.dmg)
             Game._removeDisable(Game.bullPlayerList, b)
-
 
     @staticmethod
     def _updateEnemyBullet():
         for b in Game.bullEnemyList:
             b.update()
             for p in Game.playerList:
-                if b.collide(p.spaceship.getCurRect()):
+                if p.spaceship.exists and b.collide(p.spaceship.getCurRect()):
                     p.spaceship.beShot(b.dmg)
             Game._removeDisable(Game.bullEnemyList, b)
 
@@ -221,7 +215,6 @@ class Game:
             Game._updateEnemy()
         else:
             Game._updateFrame()
-
 
     @staticmethod
     def run():
