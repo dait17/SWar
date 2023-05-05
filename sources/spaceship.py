@@ -1,6 +1,7 @@
 from game import Game as G
 from messageBox import MessageBox
 from gameTools import *
+from sound import Sound
 
 
 class Spaceship:
@@ -300,7 +301,8 @@ class Spaceship:
                 self._explosion.update()
             self.enable = self._explosion.enable
             if self.explosionSound is not None:
-                self.explosionSound.play()
+                Sound.EChanel.play(self.explosionSound)
+                # self.explosionSound.play()
 
 
 class Explosion:

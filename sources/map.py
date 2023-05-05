@@ -6,7 +6,7 @@ from player import Player
 from items import Items
 
 
-# from sound import Sound
+from sound import Sound
 
 
 class Map:
@@ -17,6 +17,7 @@ class Map:
         # p.spaceship.maxHp = 99999
         # p.spaceship.hp = 99999
         # Game.setPlayer([p])
+        Sound.playingSound_play()
         Game.setPlayer([Player()])
         self.data = self._loadData(mapPath)
         self.background = self.getBackground()
@@ -92,7 +93,7 @@ class Map:
 
     def _won(self):
         if self._wTime == 0:
-            # Sound.wonSound_play()
+            Sound.wonSound_play()
             self._wTime = pygame.time.get_ticks()
         elif pygame.time.get_ticks() - self._wTime >= 1000:
             MessageBox.show('You win!', '', Game.srect.center, (0, 255, 0), 36)
