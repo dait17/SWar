@@ -13,7 +13,7 @@ class FireBall(Bullets):
         self.imgPath = '..\\assets\\img_bullet\\bl_red.png'
         self.img = self._getImg(self.imgPath)
         self.d_degree = 6
-        self.size = [30,30]
+        self.size = [20,20]
         self.vel = 20
         self.dmd = 33
         self.durability = 1
