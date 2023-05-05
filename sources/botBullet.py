@@ -9,7 +9,7 @@ class BotBullet1(Bullets):
         self.cooldownTime = random.randint(1000, 3000)
         self.recoil = 30
         self.levelMax = 3
-        self.imgPath = '..\\assets\\img_bullet\\slime.png'
+        self.imgPath = '..\\assets\\img_bullet\\fireball.png'
         self.img = Image.load(self.imgPath)
         self.d_degree = 30
         self.size = [30, 30]

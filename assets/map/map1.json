@@ -1,5 +1,5 @@
 {"name":  "Map1", "background": {"imgPathList": ["\\assets\\img_background\\bg_8.jpg"], "ops": "repeat"},
-  "items": {"levelUp": 0.3, "changeBullet": 0.8, "changeShip": 0.3, "health": 0.4},
+  "items": {"levelUp": 0.3, "changeBullet": 0.5, "changeShip": 0.5, "health": 0.4},
   "rounds":
   {"round1": [
     {"normalBot": [{"botName": "Alien", "quantity": 6, "groupType": "chaining", "distance": [30,30], "size": [50,50],"hp": 100, "startPoint": [100, -20],

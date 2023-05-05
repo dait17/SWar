@@ -12,7 +12,7 @@ class FireBall(Bullets):
         self.d_degree = 6
         self.size = [30, 30]
         self.vel = 20
-        self.dmd = 33
+        self.dmd = 55
         self.durability = 1
 
     def getBullets(self, pos):
