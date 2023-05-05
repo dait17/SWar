@@ -1,6 +1,6 @@
-import pygame
 from game import Game as G
 from messageBox import MessageBox
+from gameTools import *
 
 
 class Spaceship:
@@ -55,6 +55,10 @@ class Spaceship:
         self._AW = 0.5
         self._VW = self._AW
         self._XW = 0
+
+        #
+        self.exists = True
+        self._explosion = None
 
     def changeShip(self, imgList, size, vel, maxHp):
         self.imgList = self._fixImg(imgList)
@@ -151,7 +155,7 @@ class Spaceship:
             self.wavering = True
             self.hp -= dmg
             if self.hp<=0:
-                self.enable = False
+                self.exists = False
 
     def health(self, value):
         self.hp += value
@@ -284,24 +288,51 @@ class Spaceship:
                 self.rect.bottom = G.srect.bottom
 
     def update(self):
-        if self.enable:
+        if self.exists:
             self._effect()
             self._draw()
             self._moveToPoint()
             self._handleHitStatus()
         else:
+            if self._explosion is None:
+                self._explosion = Explosion(self.rect)
+            else:
+                self._explosion.update()
+            self.enable = self._explosion.enable
             if self.explosionSound is not None:
                 self.explosionSound.play()
 
+
+class Explosion:
+    def __init__(self, rect):
+        self._imgPathList = ['..\\assets\\img_effect\\ex_1.png', '..\\assets\\img_effect\\ex_2.png','..\\assets\\img_effect\\ex_3.png']
+        self.imgList = Image.loadImgList(self._imgPathList)
+        self.rect = rect.copy()
+
+        self._v = 0.1
+        self._id = 0
+        self.enable = True
+
+    def _getCurImg(self):
+        return self.imgList[int(self._id)]
+
+    def _handleId(self):
+        if self._id<len(self.imgList)-1:
+            self._id += self._v
+        else:
+            self.enable = False
+
+    def _draw(self):
+        Screen.blit(Image.smothscale(self._getCurImg(), self.rect.size), self.rect)
+
+    def update(self):
+        if self.enable:
+            self._handleId()
+            self._draw()
+
+
 if __name__ == '__main__':
-    from test import Test
-    T = Test()
-    S = Spaceship([], [400,600], [50,50],12,100,True)
-    S.setShowHp(True, True)
-
-    T.add(S)
-
-    T.run()
+    pass
 
 
 
