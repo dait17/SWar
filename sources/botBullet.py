@@ -52,6 +52,11 @@ class BotSpecialBullet1(Bullets):
         self.durability = 1
 
     def getBullets(self, pos):
+        """
+        Lay danh sach dan
+        :param pos: vi tri khoi tao dan
+        :return:
+        """
         bl = []
         degree = self._start_degree()
         for i in range(self.level * 2 - 1):

@@ -165,14 +165,22 @@ class Game:
     def _updatePlayer():
         for p in Game.playerList:
             p.update()
+            # kiểm tra sự tồn tại của phi thuyền người chơi
             if p.spaceship.exists:
+                # duyệt qua danh sách địch
                 for e in Game.enemyList:
+                    # kiểm tra sự tồn tại của phi thuyền địch và sự va chạm
                     if e.spaceship.exists and p.spaceship.getCurRect().colliderect(e.spaceship.getCurRect()):
+                        # phi thuyền người chơi nhận sát thương
                         p.spaceship.beShot(100)
+                        # dịch chuyển phi thuyền người chơi ra xa địch
                         p.spaceship.moveTo(0, 20, 20)
+                        # kích hoạt chức năng không nhận sát thương trong khoảng thời gian ngắn
                         p.spaceship.noHit()
+
                         e.spaceship.beShot(100)
                         e.spaceship.noHit()
+            # Xóa đối tượng nếu không còn có thể tồn tại (Hp phi thuyền <= 0)
             Game._removeShipDisable(Game.playerList, p)
 
     @staticmethod
@@ -188,11 +196,15 @@ class Game:
 
     @staticmethod
     def _updatePlayerBullet():
+        # Duyệt danh sách đạn
         for b in Game.bullPlayerList:
+            # cập nhật (di chuyển, hiệu ứng)
             b.update()
+            # Xử lý va chạm
             for e in Game.enemyList:
                 if e.spaceship.exists and b.collide(e.spaceship.rect):
                     e.spaceship.beShot(b.dmg)
+            # Xóa đối tượng nếu không còn có thể tồn tại (Độ bền đạn <= 0)
             Game._removeDisable(Game.bullPlayerList, b)
 
     @staticmethod
