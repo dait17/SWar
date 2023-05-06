@@ -1,3 +1,5 @@
+import pygame.key
+
 from bot import *
 from game import Game
 from gameTools import *
@@ -112,9 +114,15 @@ class Map:
             elif pygame.time.get_ticks() - self._enableTime >= 3000:
                 self.enable = False
 
+    def _escape(self):
+        keypress = pygame.key.get_pressed()
+        if keypress[pygame.K_ESCAPE]:
+            Game.playing = False
+
     def update(self):
         self.background.update()
         if self._win is None:
+            self._escape()
             self._handleRound()
             self.items.update()
             if len(Game.playerList) == 0:
