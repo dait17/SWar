@@ -184,12 +184,13 @@ class Button:
             self._content.setFontSize(self._fontSize)
 
     def _draw(self):
-        # draw border
-        Screen.drawRect(self._getBorderRect(), self._colorBorder, self._borderWidth, self._radius)
         # draw background
         if type(self.bg) is pygame.Surface:
             Screen.blit(Image.smothscale(self.bg, self._getPaddingRect().size), self._getPaddingRect())
         else:
+            # draw border
+            Screen.drawRect(self._getBorderRect(), self._colorBorder, self._borderWidth, self._radius)
+
             Screen.drawRect(self._getPaddingRect(), self._colorPadding, borderRadius=self._radius)
 
     def _updateContent(self):

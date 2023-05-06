@@ -12,18 +12,14 @@ class MainFrame:
         self._setupBnt()
 
     def _getFrame(self):
-        fr = Frame(Screen.sRect.center, Screen.sRect.size, Image.load('..\\assets\\img_background\\pxfuel.jpg'))
+        fr = Frame(Screen.sRect.center, Screen.sRect.size, Image.load('..\\assets\\img_background\\gallery.png'))
         return fr
 
     def _getBntPlay(self):
-        bnt = Button(self._frame.rect, [0, 0], [250, 70], "Play")
+        bnt = Button(self._frame.rect, [0, 0], [250, 70], "")
         bnt.posCenter(0, -70)
+        bnt.setBackground(Image.load('..\\assets\\img_bnt\\bntPlay.png'))
         bnt.connect(lambda: Game.setFrame(MapFrame()))
-        return bnt
-
-    def _getBntSoundSetting(self):
-        bnt = Button(self._frame.rect, [0, 0], [250, 50], "Sound Setting")
-        bnt.posCenter(0, 0)
         return bnt
 
     @staticmethod
@@ -31,13 +27,10 @@ class MainFrame:
         pygame.quit()
         sys.exit()
 
-    @staticmethod
-    def _bntPlayFunc():
-        pass
-
     def _getBntExit(self):
-        bnt = Button(self._frame.rect, [0, 0], [250, 70], "Exit")
+        bnt = Button(self._frame.rect, [0, 0], [250, 70], "")
         bnt.posCenter(0, 70)
+        bnt.setBackground(Image.load('..\\assets\\img_bnt\\bntCancel.png'))
         bnt.connect(MainFrame._bntExitFunc)
         return bnt
 
@@ -61,7 +54,7 @@ class MapFrame:
         self._setupBnt()
 
     def _getFrame(self):
-        fr = Frame(Screen.sRect.center, Screen.sRect.size, Image.load('..\\assets\\img_background\\bg_green.jpg'))
+        fr = Frame(Screen.sRect.center, Screen.sRect.size, Image.load('..\\assets\\img_background\\galaxy.png'))
         return fr
 
     def _getBntBack(self):
